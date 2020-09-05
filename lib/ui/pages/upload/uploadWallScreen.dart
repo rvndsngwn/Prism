@@ -14,6 +14,7 @@ import 'package:Prism/gitkey.dart';
 import 'package:photo_view/photo_view.dart';
 import 'package:Prism/data/upload/wallpaper/wallfirestore.dart' as WallStore;
 import 'package:Prism/theme/toasts.dart' as toasts;
+import 'package:Prism/main.dart' as main;
 
 class UploadWallScreen extends StatefulWidget {
   final List arguments;
@@ -106,23 +107,15 @@ class _UploadWallScreenState extends State<UploadWallScreen> {
     imageBytesThumb = await compute<File, List<int>>(_resizeImage, image);
 
     uploadFile();
-    print(image.toString());
+    // print(image.toString());
   }
 
   Future deleteFile() async {
-    var github = GitHub(auth: Authentication.basic(username, password));
-    await github.repositories.deleteFile(
-        RepositorySlug('codenameakshay2', 'prism-walls'),
-        wallpaperPath,
-        wallpaperPath,
-        wallpaperSha,
-        "master");
-    await github.repositories.deleteFile(
-        RepositorySlug('codenameakshay2', 'prism-walls'),
-        thumbPath,
-        thumbPath,
-        thumbSha,
-        "master");
+    var github = GitHub(auth: Authentication.withToken(token));
+    await github.repositories.deleteFile(RepositorySlug(gitUserName, repoName),
+        wallpaperPath, wallpaperPath, wallpaperSha, "master");
+    await github.repositories.deleteFile(RepositorySlug(gitUserName, repoName),
+        thumbPath, thumbPath, thumbSha, "master");
     print("Files deleted");
   }
 
@@ -134,10 +127,10 @@ class _UploadWallScreenState extends State<UploadWallScreen> {
     try {
       String base64Image = base64Encode(imageBytes);
       String base64ImageThumb = base64Encode(imageBytesThumb);
-      var github = GitHub(auth: Authentication.basic(username, password));
+      var github = GitHub(auth: Authentication.withToken(token));
       await github.repositories
           .createFile(
-              RepositorySlug('codenameakshay2', 'prism-walls'),
+              RepositorySlug(gitUserName, repoName),
               CreateFile(
                   message: "${Path.basename(image.path)}",
                   content: base64Image,
@@ -149,7 +142,7 @@ class _UploadWallScreenState extends State<UploadWallScreen> {
               }));
       await github.repositories
           .createFile(
-              RepositorySlug('codenameakshay2', 'prism-walls'),
+              RepositorySlug(gitUserName, repoName),
               CreateFile(
                   message: "thumb_${Path.basename(image.path)}",
                   content: base64ImageThumb,
@@ -187,7 +180,7 @@ class _UploadWallScreenState extends State<UploadWallScreen> {
         backgroundColor: Theme.of(context).primaryColor,
         appBar: AppBar(
           title: Text(
-            "Submit",
+            "Upload Wallpaper",
             style: TextStyle(color: Theme.of(context).accentColor),
           ),
         ),
@@ -279,16 +272,18 @@ class _UploadWallScreenState extends State<UploadWallScreen> {
                       child: Padding(
                         padding: const EdgeInsets.all(8.0),
                         child: Center(
-                          child: Text(
-                            "Note - We have a strong review policy, and submitting irrelevant images will lead to ban. We take about 24 hours to review the submissions, and after a successful review, your photo will be visible in the profile section.",
-                            textAlign: TextAlign.center,
-                            style: TextStyle(
-                              fontSize: 10,
-                              color: Theme.of(context)
-                                  .accentColor
-                                  .withOpacity(0.6),
-                            ),
-                          ),
+                          child: main.prefs.get('premium') == true
+                              ? "Note - We have a strong review policy, and submitting irrelevant images will lead to ban. Your photo will be visible in the profile/community section."
+                              : Text(
+                                  "Note - We have a strong review policy, and submitting irrelevant images will lead to ban. We take about 24 hours to review the submissions, and after a successful review, your photo will be visible in the profile/community section.",
+                                  textAlign: TextAlign.center,
+                                  style: TextStyle(
+                                    fontSize: 10,
+                                    color: Theme.of(context)
+                                        .accentColor
+                                        .withOpacity(0.6),
+                                  ),
+                                ),
                         ),
                       ),
                     ),
