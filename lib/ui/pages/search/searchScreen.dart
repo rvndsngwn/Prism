@@ -1,16 +1,19 @@
 import 'package:Prism/data/wallhaven/provider/wallhavenWithoutProvider.dart'
-    as WData;
-import 'package:Prism/data/pexels/provider/pexelsWithoutProvider.dart' as PData;
+    as wdata;
+import 'package:Prism/data/pexels/provider/pexelsWithoutProvider.dart' as pdata;
 import 'package:Prism/global/searchProviderMenu.dart';
+import 'package:Prism/global/svgAssets.dart';
 import 'package:Prism/routes/router.dart';
 import 'package:Prism/theme/jam_icons_icons.dart';
 import 'package:Prism/theme/themeModel.dart';
-import 'package:Prism/ui/widgets/home/bottomNavBar.dart';
-import 'package:Prism/ui/widgets/home/loading.dart';
-import 'package:Prism/ui/widgets/searchGrid.dart';
+import 'package:Prism/ui/widgets/home/core/bottomNavBar.dart';
+import 'package:Prism/ui/widgets/home/wallpapers/loading.dart';
+import 'package:Prism/ui/widgets/search/searchGrid.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_svg/flutter_svg.dart';
 import 'package:provider/provider.dart';
+import 'package:Prism/theme/config.dart' as config;
+import 'package:Prism/main.dart' as main;
 
 class SearchScreen extends StatefulWidget {
   @override
@@ -20,12 +23,12 @@ class SearchScreen extends StatefulWidget {
 class _SearchScreenState extends State<SearchScreen> {
   Future<bool> onWillPop() async {
     if (navStack.length > 1) navStack.removeLast();
-    print(navStack);
+    debugPrint(navStack.toString());
     return true;
   }
 
   String selectedProvider;
-  var selectedProviders;
+  SearchProviderMenuItem selectedProviders;
   final List providers = [
     SearchProviderMenuItem(title: 'WallHaven', icon: JamIcons.arrow_right),
     SearchProviderMenuItem(title: 'Pexels', icon: JamIcons.arrow_right)
@@ -44,6 +47,22 @@ class _SearchScreenState extends State<SearchScreen> {
     'Street',
     'Flowers',
     'Epic',
+    'Minimalism',
+    'Mountains',
+    'Field',
+    'Chocolate',
+    'Train',
+    'Walking',
+    'Food',
+    'Design',
+    'Love',
+    'Wildlife',
+    'Stock',
+    'Trees',
+    'Planets',
+    'Space',
+    'Winter',
+    'Beach',
   ];
   bool isSubmitted;
   TextEditingController searchController = TextEditingController();
@@ -52,7 +71,8 @@ class _SearchScreenState extends State<SearchScreen> {
   void initState() {
     isSubmitted = false;
     selectedProvider = "WallHaven";
-    selectedProviders = providers[0];
+    selectedProviders = providers[0] as SearchProviderMenuItem;
+    tags.shuffle();
     super.initState();
   }
 
@@ -63,12 +83,9 @@ class _SearchScreenState extends State<SearchScreen> {
       child: Scaffold(
           backgroundColor: Theme.of(context).primaryColor,
           appBar: AppBar(
-            excludeHeaderSemantics: false,
             automaticallyImplyLeading: false,
-            elevation: 0,
             titleSpacing: 0,
             title: Row(
-              mainAxisAlignment: MainAxisAlignment.start,
               mainAxisSize: MainAxisSize.min,
               children: <Widget>[
                 Padding(
@@ -84,7 +101,7 @@ class _SearchScreenState extends State<SearchScreen> {
                                 borderRadius: BorderRadius.circular(500),
                                 color: Theme.of(context).hintColor),
                             child: TextField(
-                              cursorColor: Color(0xFFE57697),
+                              cursorColor: config.Colors().mainAccentColor(1),
                               style: Theme.of(context)
                                   .textTheme
                                   .headline5
@@ -93,7 +110,7 @@ class _SearchScreenState extends State<SearchScreen> {
                               controller: searchController,
                               decoration: InputDecoration(
                                 contentPadding:
-                                    EdgeInsets.only(left: 30, top: 15),
+                                    const EdgeInsets.only(left: 30, top: 15),
                                 border: InputBorder.none,
                                 disabledBorder: InputBorder.none,
                                 enabledBorder: InputBorder.none,
@@ -113,11 +130,14 @@ class _SearchScreenState extends State<SearchScreen> {
                                 setState(() {
                                   isSubmitted = true;
                                   if (selectedProvider == "WallHaven") {
-                                    WData.wallsS = [];
-                                    _future = WData.getWallsbyQuery(tex);
+                                    wdata.wallsS = [];
+                                    _future = wdata.getWallsbyQuery(
+                                        tex,
+                                        main.prefs.get('WHcategories') as int,
+                                        main.prefs.get('WHpurity') as int);
                                   } else if (selectedProvider == "Pexels") {
-                                    PData.wallsPS = [];
-                                    _future = PData.getWallsPbyQuery(tex);
+                                    pdata.wallsPS = [];
+                                    _future = pdata.getWallsPbyQuery(tex);
                                   }
                                 });
                               },
@@ -131,27 +151,32 @@ class _SearchScreenState extends State<SearchScreen> {
                 SizedBox(
                   width: MediaQuery.of(context).size.width * 0.1,
                   child: PopupMenuButton(
-                    icon: Icon(JamIcons.more_vertical),
+                    offset: const Offset(5, 30),
+                    icon: Icon(JamIcons.more_vertical,
+                        color: Theme.of(context).accentColor),
                     elevation: 4,
                     initialValue: selectedProviders,
                     onCanceled: () {
-                      print('You have not choosed anything');
+                      debugPrint('You have not choosed anything');
                     },
+                    color: Theme.of(context).hintColor,
                     tooltip: 'Providers',
                     onSelected: (choice) {
                       setState(() {
-                        selectedProviders = choice;
-                        selectedProvider = choice.title;
+                        selectedProviders = choice as SearchProviderMenuItem;
+                        selectedProvider = choice.title.toString();
                         if (searchController.text != "") {
                           isSubmitted = true;
                           if (choice.title == "WallHaven") {
-                            WData.wallsS = [];
-                            _future =
-                                WData.getWallsbyQuery(searchController.text);
+                            wdata.wallsS = [];
+                            _future = wdata.getWallsbyQuery(
+                                searchController.text,
+                                main.prefs.get('WHcategories') as int,
+                                main.prefs.get('WHpurity') as int);
                           } else if (choice.title == "Pexels") {
-                            PData.wallsPS = [];
+                            pdata.wallsPS = [];
                             _future =
-                                PData.getWallsPbyQuery(searchController.text);
+                                pdata.getWallsPbyQuery(searchController.text);
                           }
                         }
                       });
@@ -166,9 +191,10 @@ class _SearchScreenState extends State<SearchScreen> {
                           value: choice,
                           child: Row(
                             children: <Widget>[
-                              Icon(choice.icon),
-                              SizedBox(width: 10),
-                              Text(choice.title),
+                              Icon(choice.icon as IconData,
+                                  color: Theme.of(context).accentColor),
+                              const SizedBox(width: 10),
+                              Text(choice.title.toString()),
                             ],
                           ),
                         );
@@ -179,62 +205,64 @@ class _SearchScreenState extends State<SearchScreen> {
               ],
             ),
             bottom: PreferredSize(
-                child: SizedBox(
-                  width: MediaQuery.of(context).size.width,
-                  height: 53,
-                  child: ListView.builder(
-                    scrollDirection: Axis.horizontal,
-                    itemCount: tags.length,
-                    itemBuilder: (context, index) {
-                      return Align(
-                        alignment: Alignment.center,
-                        child: Stack(
-                          children: <Widget>[
-                            Padding(
-                              padding: const EdgeInsets.fromLTRB(5, 0, 2, 0),
-                              child: ActionChip(
-                                  pressElevation: 5,
-                                  padding: EdgeInsets.fromLTRB(14, 11, 14, 11),
-                                  backgroundColor:
-                                      searchController.text.toLowerCase() ==
-                                              tags[index].toLowerCase()
-                                          ? Theme.of(context).accentColor
-                                          : Theme.of(context).hintColor,
-                                  label: Text(tags[index],
-                                      style: Theme.of(context)
-                                          .textTheme
-                                          .headline4
-                                          .copyWith(
-                                              color: searchController.text
-                                                          .toLowerCase() ==
-                                                      tags[index].toLowerCase()
-                                                  ? Theme.of(context)
-                                                      .primaryColor
-                                                  : Theme.of(context)
-                                                      .accentColor)),
-                                  onPressed: () {
-                                    setState(() {
-                                      searchController.text = tags[index];
-                                      isSubmitted = true;
-                                      if (selectedProvider == "WallHaven") {
-                                        WData.wallsS = [];
-                                        _future =
-                                            WData.getWallsbyQuery(tags[index]);
-                                      } else if (selectedProvider == "Pexels") {
-                                        PData.wallsPS = [];
-                                        _future =
-                                            PData.getWallsPbyQuery(tags[index]);
-                                      }
-                                    });
-                                  }),
-                            ),
-                          ],
-                        ),
-                      );
-                    },
-                  ),
+              preferredSize: const Size(double.infinity, 54),
+              child: SizedBox(
+                width: MediaQuery.of(context).size.width,
+                height: 53,
+                child: ListView.builder(
+                  scrollDirection: Axis.horizontal,
+                  itemCount: tags.length,
+                  itemBuilder: (context, index) {
+                    return Align(
+                      child: Stack(
+                        children: <Widget>[
+                          Padding(
+                            padding: const EdgeInsets.fromLTRB(5, 0, 2, 0),
+                            child: ActionChip(
+                                pressElevation: 5,
+                                padding:
+                                    const EdgeInsets.fromLTRB(14, 11, 14, 11),
+                                backgroundColor:
+                                    searchController.text.toLowerCase() ==
+                                            tags[index].toLowerCase()
+                                        ? Theme.of(context).accentColor
+                                        : Theme.of(context).hintColor,
+                                label: Text(tags[index],
+                                    style: Theme.of(context)
+                                        .textTheme
+                                        .headline4
+                                        .copyWith(
+                                            color: searchController.text
+                                                        .toLowerCase() ==
+                                                    tags[index].toLowerCase()
+                                                ? Theme.of(context).primaryColor
+                                                : Theme.of(context)
+                                                    .accentColor)),
+                                onPressed: () {
+                                  setState(() {
+                                    searchController.text = tags[index];
+                                    isSubmitted = true;
+                                    if (selectedProvider == "WallHaven") {
+                                      wdata.wallsS = [];
+                                      _future = wdata.getWallsbyQuery(
+                                          tags[index],
+                                          main.prefs.get('WHcategories') as int,
+                                          main.prefs.get('WHpurity') as int);
+                                    } else if (selectedProvider == "Pexels") {
+                                      pdata.wallsPS = [];
+                                      _future =
+                                          pdata.getWallsPbyQuery(tags[index]);
+                                    }
+                                  });
+                                }),
+                          ),
+                        ],
+                      ),
+                    );
+                  },
                 ),
-                preferredSize: Size(double.infinity, 54)),
+              ),
+            ),
           ),
           body: BottomBar(
             child: isSubmitted
@@ -249,13 +277,107 @@ class _SearchScreenState extends State<SearchScreen> {
                       SizedBox(
                         width: MediaQuery.of(context).size.width,
                         child: Provider.of<ThemeModel>(context, listen: false)
-                                    .returnTheme() ==
-                                ThemeType.Dark
-                            ? SvgPicture.asset(
-                                "assets/images/loader dark.svg",
+                                    .returnThemeType() ==
+                                "Dark"
+                            ? SvgPicture.string(
+                                loaderDark
+                                    .replaceAll(
+                                        "181818",
+                                        Theme.of(context)
+                                            .primaryColor
+                                            .value
+                                            .toRadixString(16)
+                                            .toString()
+                                            .substring(2))
+                                    .replaceAll(
+                                        "E57697",
+                                        main.prefs
+                                            .get("mainAccentColor")
+                                            .toRadixString(16)
+                                            .toString()
+                                            .substring(2))
+                                    .replaceAll(
+                                        "F0F0F0",
+                                        Theme.of(context)
+                                            .accentColor
+                                            .value
+                                            .toRadixString(16)
+                                            .toString()
+                                            .substring(2))
+                                    .replaceAll(
+                                        "2F2E41",
+                                        Theme.of(context)
+                                            .accentColor
+                                            .value
+                                            .toRadixString(16)
+                                            .toString()
+                                            .substring(2))
+                                    .replaceAll(
+                                        "3F3D56",
+                                        Theme.of(context)
+                                            .accentColor
+                                            .value
+                                            .toRadixString(16)
+                                            .toString()
+                                            .substring(2))
+                                    .replaceAll(
+                                        "2F2F2F",
+                                        Theme.of(context)
+                                            .hintColor
+                                            .value
+                                            .toRadixString(16)
+                                            .toString()
+                                            .substring(2)),
                               )
-                            : SvgPicture.asset(
-                                "assets/images/loader light.svg",
+                            : SvgPicture.string(
+                                loaderLight
+                                    .replaceAll(
+                                        "181818",
+                                        Theme.of(context)
+                                            .primaryColor
+                                            .value
+                                            .toRadixString(16)
+                                            .toString()
+                                            .substring(2))
+                                    .replaceAll(
+                                        "E57697",
+                                        main.prefs
+                                            .get("mainAccentColor")
+                                            .toRadixString(16)
+                                            .toString()
+                                            .substring(2))
+                                    .replaceAll(
+                                        "F0F0F0",
+                                        Theme.of(context)
+                                            .accentColor
+                                            .value
+                                            .toRadixString(16)
+                                            .toString()
+                                            .substring(2))
+                                    .replaceAll(
+                                        "2F2E41",
+                                        Theme.of(context)
+                                            .accentColor
+                                            .value
+                                            .toRadixString(16)
+                                            .toString()
+                                            .substring(2))
+                                    .replaceAll(
+                                        "3F3D56",
+                                        Theme.of(context)
+                                            .accentColor
+                                            .value
+                                            .toRadixString(16)
+                                            .toString()
+                                            .substring(2))
+                                    .replaceAll(
+                                        "2F2F2F",
+                                        Theme.of(context)
+                                            .hintColor
+                                            .value
+                                            .toRadixString(16)
+                                            .toString()
+                                            .substring(2)),
                               ),
                       ),
                       SizedBox(
@@ -273,7 +395,7 @@ class SearchLoader extends StatefulWidget {
   final Future future;
   final String query;
   final String selectedProvider;
-  SearchLoader(
+  const SearchLoader(
       {@required this.future,
       @required this.query,
       @required this.selectedProvider});
@@ -287,12 +409,12 @@ class _SearchLoaderState extends State<SearchLoader> {
   @override
   void initState() {
     if (widget.selectedProvider == "WallHaven") {
-      WData.wallsS = [];
-      WData.pageGetQuery = 1;
+      wdata.wallsS = [];
+      wdata.pageGetQuery = 1;
       _future = widget.future;
     } else if (widget.selectedProvider == "Pexels") {
-      PData.wallsPS = [];
-      PData.pageGetQueryP = 1;
+      pdata.wallsPS = [];
+      pdata.pageGetQueryP = 1;
       _future = widget.future;
     }
 
@@ -305,15 +427,14 @@ class _SearchLoaderState extends State<SearchLoader> {
       future: _future,
       builder: (ctx, snapshot) {
         if (snapshot == null) {
-          print("snapshot null");
-          return LoadingCards();
+          debugPrint("snapshot null");
+          return const LoadingCards();
         }
         if (snapshot.connectionState == ConnectionState.waiting ||
             snapshot.connectionState == ConnectionState.none) {
-          print("snapshot none, waiting");
-          return LoadingCards();
+          debugPrint("snapshot none, waiting");
+          return const LoadingCards();
         } else {
-          // print("snapshot done");
           return SearchGrid(
             query: widget.query,
             selectedProvider: widget.selectedProvider,

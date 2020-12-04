@@ -2,6 +2,7 @@ import 'package:Prism/analytics/analytics_service.dart';
 import 'package:Prism/payments/upgrade.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_auth/firebase_auth.dart';
+import 'package:flutter/foundation.dart';
 import 'package:google_sign_in/google_sign_in.dart';
 import 'package:hive/hive.dart';
 import 'package:purchases_flutter/purchases_flutter.dart';
@@ -19,7 +20,6 @@ class GoogleAuth {
   bool isLoading = false;
 
   Future<String> signInWithGoogle() async {
-    // try {
     isLoading = true;
     prefs = await Hive.openBox('prefs');
     final GoogleSignInAccount googleSignInAccount = await googleSignIn.signIn();
@@ -44,25 +44,31 @@ class GoogleAuth {
           .where('id', isEqualTo: user.uid)
           .getDocuments();
       final List<DocumentSnapshot> documents = result.documents;
-      if (documents.length == 0) {
+      if (documents.isEmpty) {
         Firestore.instance.collection('users').document(user.uid).setData({
           'name': user.displayName,
           'email': user.email,
           'id': user.uid,
           'createdAt': DateTime.now().toIso8601String(),
           'premium': false,
+          'twitter': "",
+          'instagram': "",
         });
         await prefs.put('id', user.uid);
         await prefs.put('name', user.displayName);
         await prefs.put('email', user.email);
         await prefs.put('logged', "true");
         await prefs.put('premium', false);
+        await prefs.put('twitter', "");
+        await prefs.put('instagram', "");
       } else {
         await prefs.put('id', documents[0]['id']);
         await prefs.put('name', documents[0]['name']);
         await prefs.put('email', documents[0]['email']);
         await prefs.put('logged', "true");
         await prefs.put('premium', documents[0]['premium'] ?? false);
+        await prefs.put('twitter', documents[0]['twitter'] ?? "");
+        await prefs.put('instagram', documents[0]['instagram'] ?? "");
       }
       isLoading = false;
     }
@@ -80,7 +86,7 @@ class GoogleAuth {
     return 'signInWithGoogle succeeded: $user';
   }
 
-  void signOutGoogle() async {
+  Future<bool> signOutGoogle() async {
     await googleSignIn.signOut();
     Hive.openBox('prefs').then((value) {
       value.put('googlename', "");
@@ -91,14 +97,17 @@ class GoogleAuth {
       value.put('email', "");
       value.put('logged', "false");
       value.put('premium', false);
+      value.put('twitter', "");
+      value.put('instagram', "");
     });
     await Purchases.reset();
-    print("User Sign Out");
+    debugPrint("User Sign Out");
+    return true;
   }
 
   Future<bool> isSignedIn() async {
     googleSignIn.isSignedIn().then((value) {
-      print(value);
+      debugPrint(value.toString());
       return value;
     });
   }

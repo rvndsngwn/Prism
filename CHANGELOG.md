@@ -1,5 +1,81 @@
 ## Changelog
 
+### v2.6.2
+- Fixed notification modifiers
+- Added new image compression technique
+- Fixed premium wallpapers & setups
+- Added new onboarding pages
+- Added report button in walls and setups
+- Redesigned premium page
+- Redesigned settings page
+- Increased content value in premium
+- Fixed wallpaper uploading in setups
+- Added new filters (Blur, Invert, Edge & Sharpen)
+- Minor bug fixes and improvements
+
+### v2.6.1
+- Added ability to favourite setups
+- Added setups to profile
+- Added more modifiers in in-app-notifications
+- Redesigned setup's info panel.
+- Redesigned profile page.
+- Added rightside - nav drawer in profile
+- Added support for smaller screen phone.
+- Updated dialogs' design
+- Added animations to dialogs
+- Added Ink ripple animations
+- Added more animations in sliding panel
+- Added support for Scoped Storage Android 11
+- Added more crop ratios in wallpaper upload
+- Added an easter egg
+- Fixed Profile Nav Issue
+- Added reshuffling of search tags
+- Minor bug fixes and improvements
+
+### v2.6.0
+- Setups' uploading is now out of beta
+- Added new themes & theme designer
+- Removed "Premium required" for variants
+- Added new Wallpaper Filters (beta)
+- Added new & improved in-app notifications
+- Fixed thousands of lint issues
+- Updated Sliding Up Panel
+- Added New About Page
+- Swapped Firebase Storage with GitHub in setups
+- Redesigned new category popup
+- Changed HomeScreen Layout to Tabs
+- Setups now don't require signin to view
+- Improved Scrolling Performance
+- Added High Refresh Rate Support 
+- Twitter and Instagram now visible in wallpapers' info
+- Added verfied users
+- Added dynamic svg Strings
+- Removed tutorial coach mark
+- Reduced assets & app size
+- Minor bug fixes and improvements
+
+### v2.5.7
+- Redesigned settings screen
+- Now customise the accent color of the app
+- Now connect Twitter with your Prism Profile
+- Now connect Instagram with your Prism Profile
+- Now share setups and profiles
+- Redesigned App Icon
+- Redesigned splash animation
+- Now join our telegram group from the app
+- Minor bug fixes and improvements
+
+### v2.5.6
+- Now Download wallpapers even if ads failed to load
+- Redesigned Collections' screen
+- Redesigned Setups' Browser
+- Added option to disable Wallpaper Optimisation
+- Now Upload Setups in-app
+- Redesigned Clock Overlay
+- Fixed Pexels API not working
+- Removed Secure Flags
+- Major bug fixes
+
 ### v2.5.5
 - Premium uploads get reviewed instantly now
 - Added collections, find similar wallpapers easily

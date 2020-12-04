@@ -1,30 +1,32 @@
 import 'package:Prism/theme/jam_icons_icons.dart';
+import 'package:animations/animations.dart';
 import 'package:flare_flutter/flare_actor.dart';
 import 'package:flutter/material.dart';
 import 'package:Prism/global/globals.dart' as globals;
 import 'package:Prism/main.dart' as main;
 import 'package:Prism/theme/toasts.dart' as toasts;
+import 'package:Prism/theme/config.dart' as config;
 
 void googleSignInPopUp(BuildContext context, Function func) {
-  Dialog loaderDialog = Dialog(
-    shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(20)),
+  final Dialog loaderDialog = Dialog(
+    shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(10)),
     child: Container(
       decoration: BoxDecoration(
-          borderRadius: BorderRadius.circular(20),
+          borderRadius: BorderRadius.circular(10),
           color: Theme.of(context).primaryColor),
       width: MediaQuery.of(context).size.width * .7,
       height: MediaQuery.of(context).size.height * .3,
-      child: Center(
+      child: const Center(
         child: CircularProgressIndicator(),
       ),
     ),
   );
-  Dialog signinPopUp = Dialog(
-    shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(20)),
-    child: SingleChildScrollView(
+  final AlertDialog signinPopUp = AlertDialog(
+    shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(10)),
+    content: SingleChildScrollView(
       child: Container(
         decoration: BoxDecoration(
-            borderRadius: BorderRadius.circular(20),
+            borderRadius: BorderRadius.circular(10),
             color: Theme.of(context).primaryColor),
         width: MediaQuery.of(context).size.width * .78,
         child: Column(
@@ -35,14 +37,12 @@ void googleSignInPopUp(BuildContext context, Function func) {
               height: 150,
               width: MediaQuery.of(context).size.width * .78,
               decoration: BoxDecoration(
-                  borderRadius: BorderRadius.only(
-                      topLeft: Radius.circular(20),
-                      topRight: Radius.circular(20)),
+                  borderRadius: const BorderRadius.only(
+                      topLeft: Radius.circular(10),
+                      topRight: Radius.circular(10)),
                   color: Theme.of(context).hintColor),
-              child: FlareActor(
+              child: const FlareActor(
                 "assets/animations/Signin.flr",
-                isPaused: false,
-                alignment: Alignment.center,
                 animation: "signin",
               ),
             ),
@@ -60,22 +60,20 @@ void googleSignInPopUp(BuildContext context, Function func) {
                 ),
               ],
             ),
-            SizedBox(
+            const SizedBox(
               height: 20,
             ),
             Row(
-              crossAxisAlignment: CrossAxisAlignment.center,
-              mainAxisAlignment: MainAxisAlignment.start,
               children: [
-                SizedBox(
+                const SizedBox(
                   width: 20,
                 ),
                 Icon(
                   JamIcons.heart,
                   size: 22,
-                  color: Color(0xFFE57697),
+                  color: config.Colors().mainAccentColor(1),
                 ),
-                SizedBox(
+                const SizedBox(
                   width: 20,
                 ),
                 Container(
@@ -90,58 +88,26 @@ void googleSignInPopUp(BuildContext context, Function func) {
                 ),
               ],
             ),
-            SizedBox(
+            const SizedBox(
               height: 10,
             ),
             Row(
-              crossAxisAlignment: CrossAxisAlignment.center,
-              mainAxisAlignment: MainAxisAlignment.start,
               children: [
-                SizedBox(
-                  width: 20,
-                ),
-                Icon(
-                  JamIcons.instant_picture,
-                  size: 22,
-                  color: Color(0xFFE57697),
-                ),
-                SizedBox(
-                  width: 20,
-                ),
-                Container(
-                  width: MediaQuery.of(context).size.width * 0.6,
-                  child: Text(
-                    "The ability to view setups.",
-                    style: Theme.of(context)
-                        .textTheme
-                        .headline6
-                        .copyWith(color: Theme.of(context).accentColor),
-                  ),
-                ),
-              ],
-            ),
-            SizedBox(
-              height: 10,
-            ),
-            Row(
-              crossAxisAlignment: CrossAxisAlignment.center,
-              mainAxisAlignment: MainAxisAlignment.start,
-              children: [
-                SizedBox(
+                const SizedBox(
                   width: 20,
                 ),
                 Icon(
                   JamIcons.upload,
                   size: 22,
-                  color: Color(0xFFE57697),
+                  color: config.Colors().mainAccentColor(1),
                 ),
-                SizedBox(
+                const SizedBox(
                   width: 20,
                 ),
                 Container(
                   width: MediaQuery.of(context).size.width * 0.6,
                   child: Text(
-                    "The ability to submit your wallpapers.",
+                    "The ability to upload wallpapers.",
                     style: Theme.of(context)
                         .textTheme
                         .headline6
@@ -150,22 +116,76 @@ void googleSignInPopUp(BuildContext context, Function func) {
                 ),
               ],
             ),
-            SizedBox(
+            const SizedBox(
               height: 10,
             ),
             Row(
-              crossAxisAlignment: CrossAxisAlignment.center,
-              mainAxisAlignment: MainAxisAlignment.start,
               children: [
-                SizedBox(
+                const SizedBox(
+                  width: 20,
+                ),
+                Icon(
+                  JamIcons.instant_picture,
+                  size: 22,
+                  color: config.Colors().mainAccentColor(1),
+                ),
+                const SizedBox(
+                  width: 20,
+                ),
+                Container(
+                  width: MediaQuery.of(context).size.width * 0.6,
+                  child: Text(
+                    "The ability to upload setups.",
+                    style: Theme.of(context)
+                        .textTheme
+                        .headline6
+                        .copyWith(color: Theme.of(context).accentColor),
+                  ),
+                ),
+              ],
+            ),
+            const SizedBox(
+              height: 10,
+            ),
+            Row(
+              children: [
+                const SizedBox(
+                  width: 20,
+                ),
+                Icon(
+                  JamIcons.coin,
+                  size: 22,
+                  color: config.Colors().mainAccentColor(1),
+                ),
+                const SizedBox(
+                  width: 20,
+                ),
+                Container(
+                  width: MediaQuery.of(context).size.width * 0.6,
+                  child: Text(
+                    "The ability to buy premium.",
+                    style: Theme.of(context)
+                        .textTheme
+                        .headline6
+                        .copyWith(color: Theme.of(context).accentColor),
+                  ),
+                ),
+              ],
+            ),
+            const SizedBox(
+              height: 10,
+            ),
+            Row(
+              children: [
+                const SizedBox(
                   width: 20,
                 ),
                 Icon(
                   JamIcons.cloud,
                   size: 22,
-                  color: Color(0xFFE57697),
+                  color: config.Colors().mainAccentColor(1),
                 ),
-                SizedBox(
+                const SizedBox(
                   width: 20,
                 ),
                 Container(
@@ -180,45 +200,61 @@ void googleSignInPopUp(BuildContext context, Function func) {
                 ),
               ],
             ),
-            SizedBox(
-              height: 25,
-            ),
-            FlatButton(
-              shape: StadiumBorder(),
-              color: Color(0xFFE57697),
-              onPressed: () {
-                Navigator.of(context).pop();
-                showDialog(
-                    barrierDismissible: false,
-                    context: context,
-                    builder: (BuildContext context) => loaderDialog);
-                globals.gAuth.signInWithGoogle().then((value) {
-                  toasts.codeSend("Login Successful!");
-                  main.prefs.put("isLoggedin", true);
-                  Navigator.pop(context);
-                  func();
-                }).catchError((e) {
-                  print(e);
-                  Navigator.pop(context);
-                  main.prefs.put("isLoggedin", false);
-                  toasts.error("Something went wrong, please try again!");
-                });
-              },
-              child: Text(
-                'SIGN IN WITH GOOGLE',
-                style: TextStyle(
-                  fontSize: 16.0,
-                  color: Colors.white,
-                ),
-              ),
-            ),
-            SizedBox(
-              height: 15,
-            ),
           ],
         ),
       ),
     ),
+    actions: [
+      FlatButton(
+        shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(5)),
+        color: Theme.of(context).primaryColor,
+        onPressed: () {
+          Navigator.of(context).pop();
+        },
+        child: Text(
+          'CLOSE',
+          style: TextStyle(
+            fontSize: 16.0,
+            color: Theme.of(context).accentColor,
+          ),
+        ),
+      ),
+      FlatButton(
+        shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(5)),
+        color: config.Colors().mainAccentColor(1),
+        onPressed: () {
+          Navigator.of(context).pop();
+          showDialog(
+              barrierDismissible: false,
+              context: context,
+              builder: (BuildContext context) => loaderDialog);
+          globals.gAuth.signInWithGoogle().then((value) {
+            toasts.codeSend("Login Successful!");
+            main.prefs.put("isLoggedin", true);
+            Navigator.pop(context);
+            func();
+          }).catchError((e) {
+            debugPrint(e.toString());
+            Navigator.pop(context);
+            main.prefs.put("isLoggedin", false);
+            toasts.error("Something went wrong, please try again!");
+          });
+        },
+        child: const Text(
+          'SIGN IN',
+          style: TextStyle(
+            fontSize: 16.0,
+            color: Colors.white,
+          ),
+        ),
+      ),
+    ],
+    contentPadding: const EdgeInsets.fromLTRB(0, 0, 0, 10),
+    backgroundColor: Theme.of(context).primaryColor,
+    actionsPadding: const EdgeInsets.fromLTRB(10, 0, 10, 0),
   );
-  showDialog(context: context, builder: (BuildContext context) => signinPopUp);
+  showModal(
+      context: context,
+      configuration: const FadeScaleTransitionConfiguration(),
+      builder: (BuildContext context) => signinPopUp);
 }

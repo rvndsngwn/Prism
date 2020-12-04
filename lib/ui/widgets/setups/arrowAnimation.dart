@@ -4,7 +4,7 @@ class ArrowBounceAnimation extends StatefulWidget {
   final Function onTap;
   final Widget child;
 
-  ArrowBounceAnimation({this.child, this.onTap});
+  const ArrowBounceAnimation({this.child, this.onTap});
 
   @override
   _ArrowBounceAnimationState createState() => _ArrowBounceAnimationState();
@@ -13,19 +13,21 @@ class ArrowBounceAnimation extends StatefulWidget {
 class _ArrowBounceAnimationState extends State<ArrowBounceAnimation>
     with SingleTickerProviderStateMixin {
   AnimationController _controller;
+  Animation<double> animation;
 
   @override
   void initState() {
     _controller = AnimationController(
       vsync: this,
-      duration: Duration(
-        milliseconds: 1000,
+      duration: const Duration(
+        milliseconds: 600,
       ),
-      lowerBound: 0.0,
-      upperBound: 0.2,
     )..addListener(() {
         if (mounted) setState(() {});
       });
+    animation = Tween(begin: 0.0, end: 0.3)
+        .chain(CurveTween(curve: Curves.easeInCubic))
+        .animate(_controller);
     super.initState();
     _controller.repeat();
   }
@@ -39,7 +41,7 @@ class _ArrowBounceAnimationState extends State<ArrowBounceAnimation>
 
   @override
   Widget build(BuildContext context) {
-    double scale = 1.2 - _controller.value;
+    final double scale = 1.3 - animation.value;
     return GestureDetector(
       onTap: _onTap,
       child: Transform.scale(

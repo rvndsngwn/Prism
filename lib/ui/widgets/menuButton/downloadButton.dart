@@ -2,19 +2,23 @@ import 'package:Prism/analytics/analytics_service.dart';
 import 'package:Prism/theme/jam_icons_icons.dart';
 import 'package:Prism/routes/routing_constants.dart';
 import 'package:Prism/ui/widgets/popup/signInPopUp.dart';
-// import 'package:Prism/ui/widgets/popup/proPopUp.dart';
+import 'package:animations/animations.dart';
+import 'package:device_info/device_info.dart';
 import 'package:firebase_admob/firebase_admob.dart';
 import 'package:flare_flutter/flare_actor.dart';
 import 'package:flutter/material.dart';
 import 'package:Prism/theme/toasts.dart' as toasts;
-import 'package:gallery_saver/gallery_saver.dart';
+import 'package:flutter/services.dart';
 import 'package:Prism/main.dart' as main;
+import 'package:gallery_saver/gallery_saver.dart';
 import 'package:permission_handler/permission_handler.dart';
 import 'package:Prism/global/globals.dart' as globals;
+import 'package:Prism/theme/config.dart' as config;
 
 class DownloadButton extends StatefulWidget {
   final String link;
   final bool colorChanged;
+
   const DownloadButton({
     @required this.link,
     @required this.colorChanged,
@@ -27,38 +31,38 @@ class DownloadButton extends StatefulWidget {
 
 class _DownloadButtonState extends State<DownloadButton> {
   bool isLoading;
+
   @override
   void initState() {
     isLoading = false;
     super.initState();
   }
 
+  static const platform = MethodChannel('flutter.prism.set_wallpaper');
+
   @override
   Widget build(BuildContext context) {
     return GestureDetector(
       onTap: () async {
-        // if (!widget.colorChanged) {
-        if (main.prefs.get("isLoggedin")) {
-          if (main.prefs.get("premium")) {
-            onDownload();
+        if (!isLoading) {
+          if (main.prefs.get("isLoggedin") == true) {
+            if (main.prefs.get("premium") == true) {
+              onDownload();
+            } else {
+              showDownloadPopup(context, () {
+                debugPrint("Download");
+                onDownload();
+              });
+            }
           } else {
             showDownloadPopup(context, () {
-              print("Download");
+              debugPrint("Download");
               onDownload();
             });
           }
         } else {
-          showDownloadPopup(context, () {
-            print("Download");
-            onDownload();
-          });
+          toasts.error("Wait for download to complete!");
         }
-        // } else {
-        //   showPremiumPopUp(() async {
-        //     print("Download");
-        //     onDownload();
-        //   });
-        // }
       },
       child: Stack(
         children: [
@@ -69,101 +73,93 @@ class _DownloadButtonState extends State<DownloadButton> {
                 BoxShadow(
                     color: Colors.black.withOpacity(.25),
                     blurRadius: 4,
-                    offset: Offset(0, 4))
+                    offset: const Offset(0, 4))
               ],
               borderRadius: BorderRadius.circular(500),
             ),
-            padding: EdgeInsets.all(17),
+            padding: const EdgeInsets.all(17),
             child: Icon(
               JamIcons.download,
               color: Theme.of(context).accentColor,
-              size: 30,
+              size: 20,
             ),
           ),
           Positioned(
               top: 0,
               left: 0,
-              height: 63,
-              width: 63,
-              child: isLoading ? CircularProgressIndicator() : Container())
+              height: 53,
+              width: 53,
+              child:
+                  isLoading ? const CircularProgressIndicator() : Container())
         ],
       ),
     );
   }
 
   void showPremiumPopUp(Function func) {
-    if (!main.prefs.get("premium")) {
+    if (main.prefs.get("premium") == false) {
       toasts.codeSend("Variants are a premium feature.");
-      Navigator.pushNamed(context, PremiumRoute);
-      // premiumPopUp(context, func);
+      Navigator.pushNamed(context, premiumRoute);
     } else {
       func();
     }
   }
 
-  void onDownload() async {
-    // if (widget.colorChanged) {
-    //   showPremiumPopUp(() async {
-    //     var status = await Permission.storage.status;
-    //     if (!status.isGranted) {
-    //       await Permission.storage.request();
-    //     }
-    //     setState(() {
-    //       isLoading = true;
-    //     });
-    //     print(widget.link);
-    //     toasts.codeSend("Starting Download");
-    //     Future.delayed(Duration(seconds: 2)).then(
-    //       (value) => GallerySaver.saveImage(widget.link, albumName: "Prism")
-    //           .then((value) {
-    //         analytics.logEvent(
-    //             name: 'download_wallpaper', parameters: {'link': widget.link});
-    //         toasts.codeSend("Image Downloaded in Pictures/Prism!");
-    //         setState(() {
-    //           isLoading = false;
-    //         });
-    //       }).catchError(
-    //         (e) {
-    //           // toasts.error(e.toString());
-    //           setState(
-    //             () {
-    //               isLoading = false;
-    //             },
-    //           );
-    //         },
-    //       ),
-    //     );
-    //   });
-    // } else {
-    var status = await Permission.storage.status;
+  Future<void> onDownload() async {
+    final status = await Permission.storage.status;
     if (!status.isGranted) {
       await Permission.storage.request();
     }
     setState(() {
       isLoading = true;
     });
-    print(widget.link);
+    debugPrint(widget.link);
+
+    final androidInfo = await DeviceInfoPlugin().androidInfo;
+    final sdkInt = androidInfo.version.sdkInt;
+    debugPrint('(SDK $sdkInt)');
     toasts.codeSend("Starting Download");
-    GallerySaver.saveImage(widget.link, albumName: "Prism").then((value) {
-      analytics.logEvent(
-          name: 'download_wallpaper', parameters: {'link': widget.link});
-      toasts.codeSend("Image Downloaded in Pictures/Prism!");
-      setState(() {
-        isLoading = false;
+
+    if (sdkInt >= 30) {
+      await platform
+          .invokeMethod('save_image', {"link": widget.link}).then((value) {
+        if (value as bool) {
+          analytics.logEvent(
+              name: 'download_wallpaper', parameters: {'link': widget.link});
+          toasts.codeSend("Wall Downloaded in Pictures/Prism!");
+        } else {
+          toasts.error("Couldn't download! Please Retry!");
+        }
+        setState(() {
+          isLoading = false;
+        });
+      }).catchError((e) {
+        debugPrint(e.toString());
+        setState(() {
+          isLoading = false;
+        });
       });
-    }).catchError((e) {
-      // toasts.error(e.toString());
-      setState(() {
-        isLoading = false;
+    } else {
+      GallerySaver.saveImage(widget.link, albumName: "Prism").then((value) {
+        analytics.logEvent(
+            name: 'download_wallpaper', parameters: {'link': widget.link});
+        toasts.codeSend("Wall Downloaded in Internal Storage/Prism!");
+        setState(() {
+          isLoading = false;
+        });
+      }).catchError((e) {
+        setState(() {
+          isLoading = false;
+        });
       });
-    });
-    // }
+    }
   }
 }
 
 void showDownloadPopup(BuildContext context, Function rewardFunc) {
-  showDialog(
+  showModal(
       context: context,
+      configuration: const FadeScaleTransitionConfiguration(),
       builder: (BuildContext context) => StatefulBuilder(
               builder: (BuildContext context, StateSetter setState) {
             return Dialog(
@@ -178,13 +174,15 @@ void showDownloadPopup(BuildContext context, Function rewardFunc) {
 
 class DownloadDialogContent extends StatefulWidget {
   final Function rewardFunc;
-  DownloadDialogContent({@required this.rewardFunc});
+
+  const DownloadDialogContent({@required this.rewardFunc});
+
   @override
   _DownloadDialogContentState createState() => _DownloadDialogContentState();
 }
 
 class _DownloadDialogContentState extends State<DownloadDialogContent> {
-  int download_coins = 0;
+  int downloadCoins = 0;
   RewardedVideoAd videoAd = RewardedVideoAd.instance;
   static const MobileAdTargetingInfo targetingInfo = MobileAdTargetingInfo(
     testDevices: <String>[],
@@ -193,8 +191,8 @@ class _DownloadDialogContentState extends State<DownloadDialogContent> {
   );
 
   void reward(int rewardAmount) {
-    download_coins += rewardAmount;
-    print("Coins : " + download_coins.toString());
+    downloadCoins += rewardAmount;
+    debugPrint("Coins : ${downloadCoins.toString()}");
   }
 
   @override
@@ -203,7 +201,7 @@ class _DownloadDialogContentState extends State<DownloadDialogContent> {
         .initialize(appId: "ca-app-pub-4649644680694757~6175744196");
     videoAd.listener =
         (RewardedVideoAdEvent event, {String rewardType, int rewardAmount}) {
-      print("REWARDED VIDEO AD $event");
+      debugPrint("REWARDED VIDEO AD $event");
       switch (event) {
         case RewardedVideoAdEvent.loaded:
           setState(() {
@@ -212,7 +210,10 @@ class _DownloadDialogContentState extends State<DownloadDialogContent> {
           break;
         case RewardedVideoAdEvent.failedToLoad:
           toasts.error("Failed to load ad");
-          Navigator.pop(context);
+          if (mounted) {
+            Navigator.pop(context);
+            widget.rewardFunc();
+          }
           break;
         case RewardedVideoAdEvent.leftApplication:
           break;
@@ -222,7 +223,7 @@ class _DownloadDialogContentState extends State<DownloadDialogContent> {
           reward(rewardAmount);
           break;
         case RewardedVideoAdEvent.closed:
-          if (download_coins >= 10) widget.rewardFunc();
+          if (downloadCoins >= 10) widget.rewardFunc();
           break;
         case RewardedVideoAdEvent.opened:
         case RewardedVideoAdEvent.completed:
@@ -250,29 +251,24 @@ class _DownloadDialogContentState extends State<DownloadDialogContent> {
             height: 150,
             width: MediaQuery.of(context).size.width * .78,
             decoration: BoxDecoration(
-                borderRadius: BorderRadius.only(
+                borderRadius: const BorderRadius.only(
                     topLeft: Radius.circular(20),
                     topRight: Radius.circular(20)),
                 color: Theme.of(context).hintColor),
-            child: FlareActor(
+            child: const FlareActor(
               "assets/animations/Update.flr",
-              fit: BoxFit.contain,
-              isPaused: false,
-              alignment: Alignment.center,
               animation: "update",
             ),
           ),
           Column(
             mainAxisSize: MainAxisSize.min,
             children: <Widget>[
-              SizedBox(
+              const SizedBox(
                 height: 20,
               ),
               Row(
-                crossAxisAlignment: CrossAxisAlignment.center,
-                mainAxisAlignment: MainAxisAlignment.start,
                 children: [
-                  SizedBox(
+                  const SizedBox(
                     width: 20,
                   ),
                   Container(
@@ -289,24 +285,24 @@ class _DownloadDialogContentState extends State<DownloadDialogContent> {
               ),
             ],
           ),
-          SizedBox(
+          const SizedBox(
             height: 25,
           ),
           Row(
             mainAxisAlignment: MainAxisAlignment.spaceEvenly,
             children: <Widget>[
               FlatButton(
-                shape: StadiumBorder(),
-                color: Color(0xFFE57697),
+                shape: const StadiumBorder(),
+                color: config.Colors().mainAccentColor(1),
                 onPressed: () {
-                  if (!main.prefs.get("isLoggedin")) {
+                  if (main.prefs.get("isLoggedin") == false) {
                     googleSignInPopUp(context, () {
                       Navigator.of(context).pop();
-                      Navigator.pushNamed(context, PremiumRoute);
+                      Navigator.pushNamed(context, premiumRoute);
                     });
                   } else {
                     Navigator.of(context).pop();
-                    Navigator.pushNamed(context, PremiumRoute);
+                    Navigator.pushNamed(context, premiumRoute);
                   }
                 },
                 child: Text(
@@ -318,15 +314,19 @@ class _DownloadDialogContentState extends State<DownloadDialogContent> {
                 ),
               ),
               FlatButton(
-                shape: StadiumBorder(),
+                shape: const StadiumBorder(),
                 color: Theme.of(context).accentColor.withOpacity(0.3),
                 onPressed: () {
                   globals.loadingAd
                       ? toasts.error("Loading ads")
                       : videoAd.show();
-                  globals.loadingAd ? print("") : Navigator.of(context).pop();
+                  globals.loadingAd
+                      ? debugPrint("")
+                      : Navigator.of(context).pop();
                   setState(() {
-                    globals.loadingAd ? print("") : globals.loadingAd = true;
+                    globals.loadingAd
+                        ? debugPrint("")
+                        : globals.loadingAd = true;
                   });
                 },
                 child: !globals.loadingAd
@@ -349,13 +349,13 @@ class _DownloadDialogContentState extends State<DownloadDialogContent> {
                                   .withOpacity(0.3),
                             ),
                           ),
-                          CircularProgressIndicator(),
+                          const CircularProgressIndicator(),
                         ],
                       ),
               ),
             ],
           ),
-          SizedBox(
+          const SizedBox(
             height: 15,
           ),
         ],

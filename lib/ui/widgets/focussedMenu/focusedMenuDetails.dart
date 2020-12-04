@@ -6,6 +6,7 @@ import 'package:Prism/data/profile/wallpaper/profileWallProvider.dart';
 import 'package:Prism/data/profile/wallpaper/getUserProfile.dart' as UserData;
 import 'package:Prism/data/wallhaven/provider/wallhavenWithoutProvider.dart'
     as WData;
+import 'package:Prism/global/svgAssets.dart';
 import 'package:Prism/routes/routing_constants.dart';
 import 'package:Prism/theme/jam_icons_icons.dart';
 import 'package:Prism/theme/themeModel.dart';
@@ -14,14 +15,20 @@ import 'package:Prism/ui/widgets/menuButton/favWallpaperButton.dart';
 import 'package:Prism/ui/widgets/menuButton/setWallpaperButton.dart';
 import 'package:cached_network_image/cached_network_image.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter_svg/flutter_svg.dart';
 import 'package:provider/provider.dart';
+import 'package:url_launcher/url_launcher.dart';
+import 'package:Prism/main.dart' as main;
+import 'package:Prism/global/globals.dart' as globals;
+import 'package:Prism/theme/config.dart' as config;
 
-class FocusedMenuDetails extends StatelessWidget {
+class FocusedMenuDetails extends StatefulWidget {
   final String provider;
   final Offset childOffset;
   final Size childSize;
   final int index;
-
+  final Size size;
+  final Orientation orientation;
   final Widget child;
 
   const FocusedMenuDetails({
@@ -31,107 +38,134 @@ class FocusedMenuDetails extends StatelessWidget {
     @required this.childSize,
     @required this.child,
     @required this.index,
+    @required this.size,
+    @required this.orientation,
   }) : super(key: key);
 
   @override
-  Widget build(BuildContext context) {
-    final Size size = MediaQuery.of(context).size;
+  _FocusedMenuDetailsState createState() => _FocusedMenuDetailsState();
+}
 
-    final maxMenuWidth = size.width * 0.63;
-    final menuHeight = size.height * 0.14;
-    final leftOffset = (childOffset.dx + maxMenuWidth) < size.width
-        ? MediaQuery.of(context).orientation == Orientation.portrait
-            ? childOffset.dx + childSize.width + size.width * 0.015
-            : childOffset.dx + childSize.width + size.width * 0.01
-        : MediaQuery.of(context).orientation == Orientation.portrait
-            ? (childOffset.dx - maxMenuWidth + childSize.width)
-            : (childOffset.dx -
+class _FocusedMenuDetailsState extends State<FocusedMenuDetails> {
+  num maxMenuWidth;
+  num menuHeight;
+  double leftOffset;
+  double topOffset;
+  num fabHeartTopOffset;
+  num fabWallLeftOffset;
+  num fabWallTopOffset;
+  num fabHeartLeftOffset;
+  @override
+  void initState() {
+    maxMenuWidth = widget.size.width * 0.63;
+    menuHeight = widget.size.height * 0.14;
+    leftOffset = (widget.childOffset.dx + maxMenuWidth) < widget.size.width
+        ? widget.orientation == Orientation.portrait
+            ? widget.childOffset.dx +
+                widget.childSize.width +
+                widget.size.width * 0.015
+            : widget.childOffset.dx +
+                widget.childSize.width +
+                widget.size.width * 0.01
+        : widget.orientation == Orientation.portrait
+            ? (widget.childOffset.dx - maxMenuWidth + widget.childSize.width)
+            : (widget.childOffset.dx -
                 maxMenuWidth +
-                childSize.width +
-                size.width * 0.3);
-    final topOffset =
-        (childOffset.dy + menuHeight + childSize.height) < size.height
-            ? MediaQuery.of(context).orientation == Orientation.portrait
-                ? childOffset.dy + childSize.height + size.width * 0.015
-                : childOffset.dy + childSize.height + size.width * 0.015
-            : MediaQuery.of(context).orientation == Orientation.portrait
-                ? childOffset.dy - menuHeight + size.width * 0.125
-                : childOffset.dy - menuHeight;
+                widget.childSize.width +
+                widget.size.width * 0.3);
+    topOffset = (widget.childOffset.dy + menuHeight + widget.childSize.height) <
+            widget.size.height
+        ? widget.orientation == Orientation.portrait
+            ? widget.childOffset.dy +
+                widget.childSize.height +
+                widget.size.width * 0.015
+            : widget.childOffset.dy +
+                widget.childSize.height +
+                widget.size.width * 0.015
+        : widget.orientation == Orientation.portrait
+            ? widget.childOffset.dy - menuHeight + widget.size.width * 0.125
+            : widget.childOffset.dy - menuHeight;
 
-    final fabHeartTopOffset =
-        (childOffset.dy + menuHeight + childSize.height) < size.height
-            ? MediaQuery.of(context).orientation == Orientation.portrait
-                ? size.width * 0.175
-                : size.width * 0.1
-            : MediaQuery.of(context).orientation == Orientation.portrait
-                ? -size.width * 0.175
-                : -size.width * 0.1;
-    final fabWallLeftOffset = (childOffset.dx + maxMenuWidth) < size.width
-        ? MediaQuery.of(context).orientation == Orientation.portrait
-            ? -size.width * 0.175
-            : -size.width * 0.1
-        : MediaQuery.of(context).orientation == Orientation.portrait
-            ? size.width * 0.175
-            : size.width * 0.1;
+    fabHeartTopOffset =
+        (widget.childOffset.dy + menuHeight + widget.childSize.height) <
+                widget.size.height
+            ? widget.orientation == Orientation.portrait
+                ? widget.size.width * 0.175
+                : widget.size.width * 0.1
+            : widget.orientation == Orientation.portrait
+                ? -widget.size.width * 0.175
+                : -widget.size.width * 0.1;
+    fabWallLeftOffset =
+        (widget.childOffset.dx + maxMenuWidth) < widget.size.width
+            ? widget.orientation == Orientation.portrait
+                ? -widget.size.width * 0.175
+                : -widget.size.width * 0.1
+            : widget.orientation == Orientation.portrait
+                ? widget.size.width * 0.175
+                : widget.size.width * 0.1;
 
-    final fabWallTopOffset =
-        (childOffset.dy + menuHeight + childSize.height) < size.height
-            ? MediaQuery.of(context).orientation == Orientation.portrait
-                ? size.width * 0.05
-                : size.width * 0.02
-            : MediaQuery.of(context).orientation == Orientation.portrait
-                ? -size.width * 0.05
-                : -size.width * 0.02;
-    final fabHeartLeftOffset = (childOffset.dx + maxMenuWidth) < size.width
-        ? MediaQuery.of(context).orientation == Orientation.portrait
-            ? -size.width * 0.05
-            : -size.width * 0.02
-        : MediaQuery.of(context).orientation == Orientation.portrait
-            ? size.width * 0.05
-            : size.width * 0.02;
-    print(provider);
+    fabWallTopOffset =
+        (widget.childOffset.dy + menuHeight + widget.childSize.height) <
+                widget.size.height
+            ? widget.orientation == Orientation.portrait
+                ? widget.size.width * 0.05
+                : widget.size.width * 0.02
+            : widget.orientation == Orientation.portrait
+                ? -widget.size.width * 0.05
+                : -widget.size.width * 0.02;
+    fabHeartLeftOffset =
+        (widget.childOffset.dx + maxMenuWidth) < widget.size.width
+            ? widget.orientation == Orientation.portrait
+                ? -widget.size.width * 0.05
+                : -widget.size.width * 0.02
+            : widget.orientation == Orientation.portrait
+                ? widget.size.width * 0.05
+                : widget.size.width * 0.02;
+    super.initState();
+  }
+
+  @override
+  Widget build(BuildContext context) {
+    debugPrint(widget.provider);
     try {
-    return Scaffold(
-      backgroundColor: Colors.transparent,
-      body: Container(
-        child: Stack(
+      return Scaffold(
+        backgroundColor: Colors.transparent,
+        body: Stack(
           fit: StackFit.expand,
           children: <Widget>[
             GestureDetector(
                 onTap: () {
                   Navigator.pop(context);
                 },
-                child: BackdropFilter(
-                  filter: ImageFilter.blur(sigmaX: 1, sigmaY: 1),
-                  child: Container(
-                    color: Provider.of<ThemeModel>(context, listen: false)
-                                .returnTheme() ==
-                            ThemeType.Dark
-                        ? Colors.black.withOpacity(0.75)
-                        : Colors.white.withOpacity(0.75),
-                  ),
+                child: Container(
+                  color: Provider.of<ThemeModel>(context, listen: false)
+                              .returnThemeType() ==
+                          "Dark"
+                      ? Colors.black.withOpacity(0.75)
+                      : Colors.white.withOpacity(0.75),
                 )),
             Positioned(
-                top: childOffset.dy,
-                left: childOffset.dx,
+                top: widget.childOffset.dy,
+                left: widget.childOffset.dx,
                 child: GestureDetector(
                   onTap: () {
                     Navigator.pop(context);
                   },
                   child: AbsorbPointer(
-                      absorbing: true,
                       child: Container(
-                          width: childSize.width,
-                          height: childSize.height,
-                          child: child)),
+                          width: widget.childSize.width,
+                          height: widget.childSize.height,
+                          child: widget.child)),
                 )),
-            provider == "WallHaven"
+            widget.provider == "WallHaven"
                 ? Positioned(
-                    top: childOffset.dy + childSize.height * 4 / 10,
-                    left: childOffset.dx,
+                    top: widget.childOffset.dy +
+                        widget.childSize.height * 4 / 10,
+                    left: widget.childOffset.dx,
                     child: TweenAnimationBuilder(
-                      duration: Duration(milliseconds: 150),
-                      builder: (BuildContext context, value, Widget child) {
+                      duration: const Duration(milliseconds: 150),
+                      builder:
+                          (BuildContext context, double value, Widget child) {
                         return Transform.scale(
                           scale: value,
                           alignment: Alignment.bottomRight,
@@ -140,10 +174,10 @@ class FocusedMenuDetails extends StatelessWidget {
                       },
                       tween: Tween(begin: 0.0, end: 1.0),
                       child: Container(
-                        width: childSize.width,
-                        height: childSize.height * 6 / 10,
+                        width: widget.childSize.width,
+                        height: widget.childSize.height * 6 / 10,
                         decoration: BoxDecoration(
-                          color: Color(0xFF2F2F2F),
+                          color: Theme.of(context).hintColor,
                           borderRadius:
                               const BorderRadius.all(Radius.circular(20.0)),
                         ),
@@ -163,16 +197,19 @@ class FocusedMenuDetails extends StatelessWidget {
                                   children: <Widget>[
                                     ActionChip(
                                         pressElevation: 5,
-                                        padding:
-                                            EdgeInsets.fromLTRB(14, 11, 14, 11),
+                                        padding: const EdgeInsets.fromLTRB(
+                                            14, 11, 14, 11),
                                         avatar: Icon(
                                           JamIcons.ordered_list,
-                                          color: HexColor(WData.walls[index]
+                                          color: HexColor(WData
+                                                          .walls[widget.index]
                                                           .colors[WData
-                                                              .walls[index]
-                                                              .colors
-                                                              .length -
-                                                          1])
+                                                                  .walls[widget
+                                                                      .index]
+                                                                  .colors
+                                                                  .length -
+                                                              1]
+                                                          .toString())
                                                       .computeLuminance() >
                                                   0.5
                                               ? Colors.black
@@ -180,45 +217,52 @@ class FocusedMenuDetails extends StatelessWidget {
                                           size: 20,
                                         ),
                                         backgroundColor: HexColor(WData
-                                                .walls[index].colors[
-                                            WData.walls[index].colors.length -
-                                                1]),
+                                            .walls[widget.index]
+                                            .colors[WData.walls[widget.index]
+                                                    .colors.length -
+                                                1]
+                                            .toString()),
                                         label: Text(
-                                          WData.walls[index].category
+                                          WData.walls[widget.index].category
                                                   .toString()[0]
                                                   .toUpperCase() +
-                                              WData.walls[index].category
+                                              WData.walls[widget.index].category
                                                   .toString()
                                                   .substring(1),
-                                          style: Theme.of(context)
-                                              .textTheme
-                                              .headline4
-                                              .copyWith(
-                                                color: HexColor(WData
-                                                                .walls[index]
-                                                                .colors[WData
-                                                                    .walls[
-                                                                        index]
-                                                                    .colors
-                                                                    .length -
-                                                                1])
-                                                            .computeLuminance() >
-                                                        0.5
-                                                    ? Colors.black
-                                                    : Colors.white,
-                                              ),
+                                          style:
+                                              Theme.of(context)
+                                                  .textTheme
+                                                  .headline4
+                                                  .copyWith(
+                                                    color: HexColor(WData
+                                                                    .walls[widget
+                                                                        .index]
+                                                                    .colors[WData
+                                                                            .walls[widget.index]
+                                                                            .colors
+                                                                            .length -
+                                                                        1]
+                                                                    .toString())
+                                                                .computeLuminance() >
+                                                            0.5
+                                                        ? Colors.black
+                                                        : Colors.white,
+                                                  ),
                                         ),
                                         onPressed: () {}),
                                     Padding(
                                       padding: const EdgeInsets.fromLTRB(
                                           0, 5, 0, 10),
                                       child: Text(
-                                        WData.walls[index].id
+                                        WData.walls[widget.index].id
                                             .toString()
                                             .toUpperCase(),
                                         style: Theme.of(context)
                                             .textTheme
-                                            .headline5,
+                                            .headline5
+                                            .copyWith(
+                                                color: Theme.of(context)
+                                                    .accentColor),
                                       ),
                                     ),
                                     Row(
@@ -226,14 +270,17 @@ class FocusedMenuDetails extends StatelessWidget {
                                         Icon(
                                           JamIcons.eye,
                                           size: 20,
-                                          color: Colors.white70,
+                                          color: Theme.of(context).accentColor,
                                         ),
-                                        SizedBox(width: 10),
+                                        const SizedBox(width: 10),
                                         Text(
-                                          "Views: ${WData.walls[index].views.toString()}",
+                                          "Views: ${WData.walls[widget.index].views.toString()}",
                                           style: Theme.of(context)
                                               .textTheme
-                                              .bodyText2,
+                                              .bodyText2
+                                              .copyWith(
+                                                  color: Theme.of(context)
+                                                      .accentColor),
                                         ),
                                       ],
                                     ),
@@ -242,14 +289,18 @@ class FocusedMenuDetails extends StatelessWidget {
                                         Icon(
                                           JamIcons.set_square,
                                           size: 20,
-                                          color: Colors.white70,
+                                          color: Theme.of(context).accentColor,
                                         ),
-                                        SizedBox(width: 10),
+                                        const SizedBox(width: 10),
                                         Text(
-                                          "${WData.walls[index].resolution.toString()}",
+                                          WData.walls[widget.index].resolution
+                                              .toString(),
                                           style: Theme.of(context)
                                               .textTheme
-                                              .bodyText2,
+                                              .bodyText2
+                                              .copyWith(
+                                                  color: Theme.of(context)
+                                                      .accentColor),
                                         ),
                                       ],
                                     ),
@@ -259,25 +310,25 @@ class FocusedMenuDetails extends StatelessWidget {
                               Align(
                                 alignment: Alignment.bottomRight,
                                 child: GestureDetector(
-                                  child: Container(
-                                    decoration: BoxDecoration(
-                                        color: Color(0xFF2F2F2F),
-                                        borderRadius: BorderRadius.only(
-                                            topLeft: Radius.circular(20),
-                                            bottomRight: Radius.circular(20))),
-                                    padding: EdgeInsets.all(0),
-                                    child: Padding(
-                                      padding:
-                                          EdgeInsets.fromLTRB(10, 5, 10, 5),
-                                      child: Icon(
-                                        JamIcons.close,
-                                        color: Colors.white,
-                                      ),
-                                    ),
-                                  ),
                                   onTap: () async {
                                     Navigator.pop(context);
                                   },
+                                  child: Container(
+                                    decoration: BoxDecoration(
+                                        color: Theme.of(context).hintColor,
+                                        borderRadius: const BorderRadius.only(
+                                            topLeft: Radius.circular(20),
+                                            bottomRight: Radius.circular(20))),
+                                    padding: const EdgeInsets.all(0),
+                                    child: Padding(
+                                      padding: const EdgeInsets.fromLTRB(
+                                          10, 5, 10, 5),
+                                      child: Icon(
+                                        JamIcons.close,
+                                        color: Theme.of(context).accentColor,
+                                      ),
+                                    ),
+                                  ),
                                 ),
                               )
                             ],
@@ -286,13 +337,15 @@ class FocusedMenuDetails extends StatelessWidget {
                       ),
                     ),
                   )
-                : provider == "Prism"
+                : widget.provider == "Prism"
                     ? Positioned(
-                        top: childOffset.dy + childSize.height * 4 / 10,
-                        left: childOffset.dx,
+                        top: widget.childOffset.dy +
+                            widget.childSize.height * 4 / 10,
+                        left: widget.childOffset.dx,
                         child: TweenAnimationBuilder(
-                          duration: Duration(milliseconds: 150),
-                          builder: (BuildContext context, value, Widget child) {
+                          duration: const Duration(milliseconds: 150),
+                          builder: (BuildContext context, double value,
+                              Widget child) {
                             return Transform.scale(
                               scale: value,
                               alignment: Alignment.bottomRight,
@@ -301,10 +354,10 @@ class FocusedMenuDetails extends StatelessWidget {
                           },
                           tween: Tween(begin: 0.0, end: 1.0),
                           child: Container(
-                            width: childSize.width,
-                            height: childSize.height * 6 / 10,
+                            width: widget.childSize.width,
+                            height: widget.childSize.height * 6 / 10,
                             decoration: BoxDecoration(
-                              color: Color(0xFF2F2F2F),
+                              color: Theme.of(context).hintColor,
                               borderRadius:
                                   const BorderRadius.all(Radius.circular(20.0)),
                             ),
@@ -323,55 +376,143 @@ class FocusedMenuDetails extends StatelessWidget {
                                       crossAxisAlignment:
                                           CrossAxisAlignment.start,
                                       children: <Widget>[
-                                        ActionChip(
-                                            pressElevation: 5,
-                                            padding: EdgeInsets.all(5),
-                                            avatar: CircleAvatar(
-                                              backgroundImage:
-                                                  CachedNetworkImageProvider(
-                                                      Data.subPrismWalls[index]
-                                                          ["userPhoto"]),
-                                            ),
-                                            backgroundColor: Colors.black,
-                                            labelPadding:
-                                                EdgeInsets.fromLTRB(7, 3, 7, 3),
-                                            label: Text(
-                                              Data.subPrismWalls[index]["by"]
-                                                      .toString()[0]
-                                                      .toUpperCase() +
-                                                  Data.subPrismWalls[index]
-                                                          ["by"]
-                                                      .toString()
-                                                      .substring(1),
-                                              style: Theme.of(context)
-                                                  .textTheme
-                                                  .headline4
-                                                  .copyWith(
-                                                    color: Colors.white,
+                                        Stack(
+                                            alignment: globals.verifiedUsers
+                                                    .contains(Data
+                                                        .subPrismWalls[widget
+                                                            .index]["email"]
+                                                        .toString())
+                                                ? Alignment.topRight
+                                                : Alignment.centerLeft,
+                                            children: [
+                                              ActionChip(
+                                                  pressElevation: 5,
+                                                  padding:
+                                                      const EdgeInsets.all(5),
+                                                  avatar: CircleAvatar(
+                                                    backgroundImage:
+                                                        CachedNetworkImageProvider(
+                                                            Data
+                                                                .subPrismWalls[
+                                                                    widget
+                                                                        .index][
+                                                                    "userPhoto"]
+                                                                .toString()),
                                                   ),
-                                            ),
-                                            onPressed: () {
-                                              Navigator.pushNamed(context,
-                                                  PhotographerProfileRoute,
-                                                  arguments: [
-                                                    Data.subPrismWalls[index]
-                                                        ["by"],
-                                                    Data.subPrismWalls[index]
-                                                        ["email"],
-                                                    Data.subPrismWalls[index]
-                                                        ["userPhoto"]
-                                                  ]);
-                                            }),
+                                                  backgroundColor: Colors.black,
+                                                  labelPadding:
+                                                      const EdgeInsets.fromLTRB(
+                                                          7, 3, 7, 3),
+                                                  label: Text(
+                                                    Data.subPrismWalls[widget
+                                                                .index]["by"]
+                                                            .toString()[0]
+                                                            .toUpperCase() +
+                                                        Data.subPrismWalls[
+                                                                widget.index]
+                                                                ["by"]
+                                                            .toString()
+                                                            .substring(1),
+                                                    style: Theme.of(context)
+                                                        .textTheme
+                                                        .headline4
+                                                        .copyWith(
+                                                          color: Colors.white,
+                                                        ),
+                                                  ),
+                                                  onPressed: () {
+                                                    Navigator.pushNamed(
+                                                        context,
+                                                        photographerProfileRoute,
+                                                        arguments: [
+                                                          Data.subPrismWalls[
+                                                                  widget.index]
+                                                              ["by"],
+                                                          Data.subPrismWalls[
+                                                                  widget.index]
+                                                              ["email"],
+                                                          Data.subPrismWalls[
+                                                                  widget.index]
+                                                              ["userPhoto"],
+                                                          false,
+                                                          Data.subPrismWalls[widget.index]
+                                                                          [
+                                                                          "twitter"] !=
+                                                                      null &&
+                                                                  Data.subPrismWalls[widget.index]
+                                                                          [
+                                                                          "twitter"] !=
+                                                                      ""
+                                                              ? Data
+                                                                  .subPrismWalls[
+                                                                      widget
+                                                                          .index]
+                                                                      [
+                                                                      "twitter"]
+                                                                  .toString()
+                                                                  .split(
+                                                                      "https://www.twitter.com/")[1]
+                                                              : "",
+                                                          Data.subPrismWalls[widget.index]
+                                                                          [
+                                                                          "instagram"] !=
+                                                                      null &&
+                                                                  Data.subPrismWalls[widget.index]
+                                                                          [
+                                                                          "instagram"] !=
+                                                                      ""
+                                                              ? Data
+                                                                  .subPrismWalls[
+                                                                      widget
+                                                                          .index]
+                                                                      [
+                                                                      "instagram"]
+                                                                  .toString()
+                                                                  .split(
+                                                                      "https://www.instagram.com/")[1]
+                                                              : "",
+                                                        ]);
+                                                  }),
+                                              globals.verifiedUsers.contains(
+                                                      Data.subPrismWalls[widget
+                                                              .index]["email"]
+                                                          .toString())
+                                                  ? Container(
+                                                      width: 20,
+                                                      height: 20,
+                                                      child: SvgPicture.string(
+                                                          verifiedIcon.replaceAll(
+                                                              "E57697",
+                                                              config.Colors().mainAccentColor(
+                                                                          1) ==
+                                                                      Colors
+                                                                          .black
+                                                                  ? "E57697"
+                                                                  : main.prefs
+                                                                      .get(
+                                                                          "mainAccentColor")
+                                                                      .toRadixString(
+                                                                          16)
+                                                                      .toString()
+                                                                      .substring(
+                                                                          2))),
+                                                    )
+                                                  : Container(),
+                                            ]),
                                         Padding(
                                           padding: const EdgeInsets.fromLTRB(
                                               0, 5, 0, 10),
                                           child: Text(
-                                            Data.subPrismWalls[index]["id"]
+                                            Data.subPrismWalls[widget.index]
+                                                    ["id"]
                                                 .toString()
                                                 .toUpperCase(),
                                             style: Theme.of(context)
                                                 .textTheme
-                                                .headline5,
+                                                .headline5
+                                                .copyWith(
+                                                    color: Theme.of(context)
+                                                        .accentColor),
                                           ),
                                         ),
                                         Row(
@@ -379,14 +520,20 @@ class FocusedMenuDetails extends StatelessWidget {
                                             Icon(
                                               JamIcons.save,
                                               size: 20,
-                                              color: Colors.white70,
+                                              color:
+                                                  Theme.of(context).accentColor,
                                             ),
-                                            SizedBox(width: 10),
+                                            const SizedBox(width: 10),
                                             Text(
-                                              "${Data.subPrismWalls[index]["size"].toString()}",
+                                              Data.subPrismWalls[widget.index]
+                                                      ["size"]
+                                                  .toString(),
                                               style: Theme.of(context)
                                                   .textTheme
-                                                  .bodyText2,
+                                                  .bodyText2
+                                                  .copyWith(
+                                                      color: Theme.of(context)
+                                                          .accentColor),
                                             ),
                                           ],
                                         ),
@@ -395,14 +542,20 @@ class FocusedMenuDetails extends StatelessWidget {
                                             Icon(
                                               JamIcons.set_square,
                                               size: 20,
-                                              color: Colors.white70,
+                                              color:
+                                                  Theme.of(context).accentColor,
                                             ),
-                                            SizedBox(width: 10),
+                                            const SizedBox(width: 10),
                                             Text(
-                                              "${Data.subPrismWalls[index]["resolution"].toString()}",
+                                              Data.subPrismWalls[widget.index]
+                                                      ["resolution"]
+                                                  .toString(),
                                               style: Theme.of(context)
                                                   .textTheme
-                                                  .bodyText2,
+                                                  .bodyText2
+                                                  .copyWith(
+                                                      color: Theme.of(context)
+                                                          .accentColor),
                                             ),
                                           ],
                                         ),
@@ -412,26 +565,29 @@ class FocusedMenuDetails extends StatelessWidget {
                                   Align(
                                     alignment: Alignment.bottomRight,
                                     child: GestureDetector(
-                                      child: Container(
-                                        decoration: BoxDecoration(
-                                            color: Color(0xFF2F2F2F),
-                                            borderRadius: BorderRadius.only(
-                                                topLeft: Radius.circular(20),
-                                                bottomRight:
-                                                    Radius.circular(20))),
-                                        padding: EdgeInsets.all(0),
-                                        child: Padding(
-                                          padding:
-                                              EdgeInsets.fromLTRB(10, 5, 10, 5),
-                                          child: Icon(
-                                            JamIcons.close,
-                                            color: Colors.white,
-                                          ),
-                                        ),
-                                      ),
                                       onTap: () async {
                                         Navigator.pop(context);
                                       },
+                                      child: Container(
+                                        decoration: BoxDecoration(
+                                            color: Theme.of(context).hintColor,
+                                            borderRadius:
+                                                const BorderRadius.only(
+                                                    topLeft:
+                                                        Radius.circular(20),
+                                                    bottomRight:
+                                                        Radius.circular(20))),
+                                        padding: const EdgeInsets.all(0),
+                                        child: Padding(
+                                          padding: const EdgeInsets.fromLTRB(
+                                              10, 5, 10, 5),
+                                          child: Icon(
+                                            JamIcons.close,
+                                            color:
+                                                Theme.of(context).accentColor,
+                                          ),
+                                        ),
+                                      ),
                                     ),
                                   )
                                 ],
@@ -440,14 +596,15 @@ class FocusedMenuDetails extends StatelessWidget {
                           ),
                         ),
                       )
-                    : provider == "ProfileWall"
+                    : widget.provider == "ProfileWall"
                         ? Positioned(
-                            top: childOffset.dy + childSize.height * 4 / 10,
-                            left: childOffset.dx,
+                            top: widget.childOffset.dy +
+                                widget.childSize.height * 4 / 10,
+                            left: widget.childOffset.dx,
                             child: TweenAnimationBuilder(
-                              duration: Duration(milliseconds: 150),
-                              builder:
-                                  (BuildContext context, value, Widget child) {
+                              duration: const Duration(milliseconds: 150),
+                              builder: (BuildContext context, double value,
+                                  Widget child) {
                                 return Transform.scale(
                                   scale: value,
                                   alignment: Alignment.bottomRight,
@@ -456,10 +613,10 @@ class FocusedMenuDetails extends StatelessWidget {
                               },
                               tween: Tween(begin: 0.0, end: 1.0),
                               child: Container(
-                                width: childSize.width,
-                                height: childSize.height * 6 / 10,
+                                width: widget.childSize.width,
+                                height: widget.childSize.height * 6 / 10,
                                 decoration: BoxDecoration(
-                                  color: Color(0xFF2F2F2F),
+                                  color: Theme.of(context).hintColor,
                                   borderRadius: const BorderRadius.all(
                                       Radius.circular(20.0)),
                                 ),
@@ -480,9 +637,10 @@ class FocusedMenuDetails extends StatelessWidget {
                                           children: <Widget>[
                                             ActionChip(
                                                 pressElevation: 5,
-                                                padding: EdgeInsets.fromLTRB(
-                                                    14, 11, 14, 11),
-                                                avatar: Icon(
+                                                padding:
+                                                    const EdgeInsets.fromLTRB(
+                                                        14, 11, 14, 11),
+                                                avatar: const Icon(
                                                   JamIcons.camera,
                                                   color: Colors.white,
                                                   size: 20,
@@ -492,15 +650,15 @@ class FocusedMenuDetails extends StatelessWidget {
                                                   Provider.of<ProfileWallProvider>(
                                                               context,
                                                               listen: false)
-                                                          .profileWalls[index]
-                                                              ["by"]
+                                                          .profileWalls[widget
+                                                              .index]["by"]
                                                           .toString()[0]
                                                           .toUpperCase() +
                                                       Provider.of<ProfileWallProvider>(
                                                               context,
                                                               listen: false)
-                                                          .profileWalls[index]
-                                                              ["by"]
+                                                          .profileWalls[widget
+                                                              .index]["by"]
                                                           .toString()
                                                           .substring(1),
                                                   style: Theme.of(context)
@@ -519,12 +677,16 @@ class FocusedMenuDetails extends StatelessWidget {
                                                 Provider.of<ProfileWallProvider>(
                                                         context,
                                                         listen: false)
-                                                    .profileWalls[index]["id"]
+                                                    .profileWalls[widget.index]
+                                                        ["id"]
                                                     .toString()
                                                     .toUpperCase(),
                                                 style: Theme.of(context)
                                                     .textTheme
-                                                    .headline5,
+                                                    .headline5
+                                                    .copyWith(
+                                                        color: Theme.of(context)
+                                                            .accentColor),
                                               ),
                                             ),
                                             Row(
@@ -532,14 +694,24 @@ class FocusedMenuDetails extends StatelessWidget {
                                                 Icon(
                                                   JamIcons.save,
                                                   size: 20,
-                                                  color: Colors.white70,
+                                                  color: Theme.of(context)
+                                                      .accentColor,
                                                 ),
-                                                SizedBox(width: 10),
+                                                const SizedBox(width: 10),
                                                 Text(
-                                                  "${Provider.of<ProfileWallProvider>(context, listen: false).profileWalls[index]["size"].toString()}",
+                                                  Provider.of<ProfileWallProvider>(
+                                                          context,
+                                                          listen: false)
+                                                      .profileWalls[
+                                                          widget.index]["size"]
+                                                      .toString(),
                                                   style: Theme.of(context)
                                                       .textTheme
-                                                      .bodyText2,
+                                                      .bodyText2
+                                                      .copyWith(
+                                                          color:
+                                                              Theme.of(context)
+                                                                  .accentColor),
                                                 ),
                                               ],
                                             ),
@@ -548,14 +720,24 @@ class FocusedMenuDetails extends StatelessWidget {
                                                 Icon(
                                                   JamIcons.set_square,
                                                   size: 20,
-                                                  color: Colors.white70,
+                                                  color: Theme.of(context)
+                                                      .accentColor,
                                                 ),
-                                                SizedBox(width: 10),
+                                                const SizedBox(width: 10),
                                                 Text(
-                                                  "${Provider.of<ProfileWallProvider>(context, listen: false).profileWalls[index]["resolution"].toString()}",
+                                                  Provider.of<ProfileWallProvider>(
+                                                          context,
+                                                          listen: false)
+                                                      .profileWalls[widget
+                                                          .index]["resolution"]
+                                                      .toString(),
                                                   style: Theme.of(context)
                                                       .textTheme
-                                                      .bodyText2,
+                                                      .bodyText2
+                                                      .copyWith(
+                                                          color:
+                                                              Theme.of(context)
+                                                                  .accentColor),
                                                 ),
                                               ],
                                             ),
@@ -565,27 +747,32 @@ class FocusedMenuDetails extends StatelessWidget {
                                       Align(
                                         alignment: Alignment.bottomRight,
                                         child: GestureDetector(
-                                          child: Container(
-                                            decoration: BoxDecoration(
-                                                color: Color(0xFF2F2F2F),
-                                                borderRadius: BorderRadius.only(
-                                                    topLeft:
-                                                        Radius.circular(20),
-                                                    bottomRight:
-                                                        Radius.circular(20))),
-                                            padding: EdgeInsets.all(0),
-                                            child: Padding(
-                                              padding: EdgeInsets.fromLTRB(
-                                                  10, 5, 10, 5),
-                                              child: Icon(
-                                                JamIcons.close,
-                                                color: Colors.white,
-                                              ),
-                                            ),
-                                          ),
                                           onTap: () async {
                                             Navigator.pop(context);
                                           },
+                                          child: Container(
+                                            decoration: BoxDecoration(
+                                                color:
+                                                    Theme.of(context).hintColor,
+                                                borderRadius:
+                                                    const BorderRadius.only(
+                                                        topLeft:
+                                                            Radius.circular(20),
+                                                        bottomRight:
+                                                            Radius.circular(
+                                                                20))),
+                                            padding: const EdgeInsets.all(0),
+                                            child: Padding(
+                                              padding:
+                                                  const EdgeInsets.fromLTRB(
+                                                      10, 5, 10, 5),
+                                              child: Icon(
+                                                JamIcons.close,
+                                                color: Theme.of(context)
+                                                    .accentColor,
+                                              ),
+                                            ),
+                                          ),
                                         ),
                                       )
                                     ],
@@ -594,13 +781,14 @@ class FocusedMenuDetails extends StatelessWidget {
                               ),
                             ),
                           )
-                        : provider == "UserProfileWall"
+                        : widget.provider == "UserProfileWall"
                             ? Positioned(
-                                top: childOffset.dy + childSize.height * 4 / 10,
-                                left: childOffset.dx,
+                                top: widget.childOffset.dy +
+                                    widget.childSize.height * 4 / 10,
+                                left: widget.childOffset.dx,
                                 child: TweenAnimationBuilder(
-                                  duration: Duration(milliseconds: 150),
-                                  builder: (BuildContext context, value,
+                                  duration: const Duration(milliseconds: 150),
+                                  builder: (BuildContext context, double value,
                                       Widget child) {
                                     return Transform.scale(
                                       scale: value,
@@ -610,10 +798,10 @@ class FocusedMenuDetails extends StatelessWidget {
                                   },
                                   tween: Tween(begin: 0.0, end: 1.0),
                                   child: Container(
-                                    width: childSize.width,
-                                    height: childSize.height * 6 / 10,
+                                    width: widget.childSize.width,
+                                    height: widget.childSize.height * 6 / 10,
                                     decoration: BoxDecoration(
-                                      color: Color(0xFF2F2F2F),
+                                      color: Theme.of(context).hintColor,
                                       borderRadius: const BorderRadius.all(
                                           Radius.circular(20.0)),
                                     ),
@@ -634,10 +822,10 @@ class FocusedMenuDetails extends StatelessWidget {
                                               children: <Widget>[
                                                 ActionChip(
                                                     pressElevation: 5,
-                                                    padding:
-                                                        EdgeInsets.fromLTRB(
-                                                            14, 11, 14, 11),
-                                                    avatar: Icon(
+                                                    padding: const EdgeInsets
+                                                            .fromLTRB(
+                                                        14, 11, 14, 11),
+                                                    avatar: const Icon(
                                                       JamIcons.camera,
                                                       color: Colors.white,
                                                       size: 20,
@@ -646,12 +834,14 @@ class FocusedMenuDetails extends StatelessWidget {
                                                         Colors.black,
                                                     label: Text(
                                                       UserData.userProfileWalls[
-                                                                  index]["by"]
+                                                                  widget.index]
+                                                                  ["by"]
                                                               .toString()[0]
                                                               .toUpperCase() +
                                                           UserData
                                                               .userProfileWalls[
-                                                                  index]["by"]
+                                                                  widget.index]
+                                                                  ["by"]
                                                               .toString()
                                                               .substring(1),
                                                       style: Theme.of(context)
@@ -667,14 +857,17 @@ class FocusedMenuDetails extends StatelessWidget {
                                                       const EdgeInsets.fromLTRB(
                                                           0, 5, 0, 10),
                                                   child: Text(
-                                                    UserData
-                                                        .userProfileWalls[index]
-                                                            ["id"]
+                                                    UserData.userProfileWalls[
+                                                            widget.index]["id"]
                                                         .toString()
                                                         .toUpperCase(),
                                                     style: Theme.of(context)
                                                         .textTheme
-                                                        .headline5,
+                                                        .headline5
+                                                        .copyWith(
+                                                            color: Theme.of(
+                                                                    context)
+                                                                .accentColor),
                                                   ),
                                                 ),
                                                 Row(
@@ -682,14 +875,22 @@ class FocusedMenuDetails extends StatelessWidget {
                                                     Icon(
                                                       JamIcons.save,
                                                       size: 20,
-                                                      color: Colors.white70,
+                                                      color: Theme.of(context)
+                                                          .accentColor,
                                                     ),
-                                                    SizedBox(width: 10),
+                                                    const SizedBox(width: 10),
                                                     Text(
-                                                      "${UserData.userProfileWalls[index]["size"].toString()}",
+                                                      UserData.userProfileWalls[
+                                                              widget.index]
+                                                              ["size"]
+                                                          .toString(),
                                                       style: Theme.of(context)
                                                           .textTheme
-                                                          .bodyText2,
+                                                          .bodyText2
+                                                          .copyWith(
+                                                              color: Theme.of(
+                                                                      context)
+                                                                  .accentColor),
                                                     ),
                                                   ],
                                                 ),
@@ -698,14 +899,22 @@ class FocusedMenuDetails extends StatelessWidget {
                                                     Icon(
                                                       JamIcons.set_square,
                                                       size: 20,
-                                                      color: Colors.white70,
+                                                      color: Theme.of(context)
+                                                          .accentColor,
                                                     ),
-                                                    SizedBox(width: 10),
+                                                    const SizedBox(width: 10),
                                                     Text(
-                                                      "${UserData.userProfileWalls[index]["resolution"].toString()}",
+                                                      UserData.userProfileWalls[
+                                                              widget.index]
+                                                              ["resolution"]
+                                                          .toString(),
                                                       style: Theme.of(context)
                                                           .textTheme
-                                                          .bodyText2,
+                                                          .bodyText2
+                                                          .copyWith(
+                                                              color: Theme.of(
+                                                                      context)
+                                                                  .accentColor),
                                                     ),
                                                   ],
                                                 ),
@@ -715,29 +924,34 @@ class FocusedMenuDetails extends StatelessWidget {
                                           Align(
                                             alignment: Alignment.bottomRight,
                                             child: GestureDetector(
-                                              child: Container(
-                                                decoration: BoxDecoration(
-                                                    color: Color(0xFF2F2F2F),
-                                                    borderRadius:
-                                                        BorderRadius.only(
-                                                            topLeft: Radius
-                                                                .circular(20),
-                                                            bottomRight:
-                                                                Radius.circular(
-                                                                    20))),
-                                                padding: EdgeInsets.all(0),
-                                                child: Padding(
-                                                  padding: EdgeInsets.fromLTRB(
-                                                      10, 5, 10, 5),
-                                                  child: Icon(
-                                                    JamIcons.close,
-                                                    color: Colors.white,
-                                                  ),
-                                                ),
-                                              ),
                                               onTap: () async {
                                                 Navigator.pop(context);
                                               },
+                                              child: Container(
+                                                decoration: BoxDecoration(
+                                                    color: Theme.of(context)
+                                                        .hintColor,
+                                                    borderRadius:
+                                                        const BorderRadius.only(
+                                                            topLeft:
+                                                                Radius.circular(
+                                                                    20),
+                                                            bottomRight:
+                                                                Radius.circular(
+                                                                    20))),
+                                                padding:
+                                                    const EdgeInsets.all(0),
+                                                child: Padding(
+                                                  padding:
+                                                      const EdgeInsets.fromLTRB(
+                                                          10, 5, 10, 5),
+                                                  child: Icon(
+                                                    JamIcons.close,
+                                                    color: Theme.of(context)
+                                                        .accentColor,
+                                                  ),
+                                                ),
+                                              ),
                                             ),
                                           )
                                         ],
@@ -746,15 +960,16 @@ class FocusedMenuDetails extends StatelessWidget {
                                   ),
                                 ),
                               )
-                            : provider == "Pexels"
+                            : widget.provider == "Pexels"
                                 ? Positioned(
-                                    top: childOffset.dy +
-                                        childSize.height * 4 / 10,
-                                    left: childOffset.dx,
+                                    top: widget.childOffset.dy +
+                                        widget.childSize.height * 4 / 10,
+                                    left: widget.childOffset.dx,
                                     child: TweenAnimationBuilder(
-                                      duration: Duration(milliseconds: 200),
-                                      builder: (BuildContext context, value,
-                                          Widget child) {
+                                      duration:
+                                          const Duration(milliseconds: 200),
+                                      builder: (BuildContext context,
+                                          double value, Widget child) {
                                         return Transform.scale(
                                           scale: value,
                                           alignment: Alignment.bottomRight,
@@ -763,10 +978,11 @@ class FocusedMenuDetails extends StatelessWidget {
                                       },
                                       tween: Tween(begin: 0.0, end: 1.0),
                                       child: Container(
-                                        width: childSize.width,
-                                        height: childSize.height * 6 / 10,
+                                        width: widget.childSize.width,
+                                        height:
+                                            widget.childSize.height * 6 / 10,
                                         decoration: BoxDecoration(
-                                          color: Color(0xFF2F2F2F),
+                                          color: Theme.of(context).hintColor,
                                           borderRadius: const BorderRadius.all(
                                               Radius.circular(20.0)),
                                         ),
@@ -790,16 +1006,19 @@ class FocusedMenuDetails extends StatelessWidget {
                                                     ActionChip(
                                                         pressElevation: 5,
                                                         padding:
-                                                            EdgeInsets.fromLTRB(
+                                                            const EdgeInsets
+                                                                    .fromLTRB(
                                                                 14, 11, 14, 11),
                                                         backgroundColor:
                                                             Colors.black,
-                                                        avatar: Icon(
+                                                        avatar: const Icon(
                                                             JamIcons.camera,
                                                             color: Colors.white,
                                                             size: 20),
                                                         label: Text(
-                                                          PData.wallsP[index]
+                                                          PData
+                                                              .wallsP[
+                                                                  widget.index]
                                                               .photographer
                                                               .toString(),
                                                           style:
@@ -811,13 +1030,18 @@ class FocusedMenuDetails extends StatelessWidget {
                                                                         .white,
                                                                   ),
                                                         ),
-                                                        onPressed: () {}),
+                                                        onPressed: () {
+                                                          launch(PData
+                                                              .wallsP[
+                                                                  widget.index]
+                                                              .url);
+                                                        }),
                                                     Padding(
                                                       padding: const EdgeInsets
                                                               .fromLTRB(
                                                           0, 5, 0, 10),
                                                       child: Text(
-                                                        PData.wallsP[index].url
+                                                        PData.wallsP[widget.index].url
                                                                     .toString()
                                                                     .replaceAll(
                                                                         "https://www.pexels.com/photo/", "")
@@ -827,7 +1051,7 @@ class FocusedMenuDetails extends StatelessWidget {
                                                                         "/", "")
                                                                     .length >
                                                                 8
-                                                            ? PData.wallsP[index].url
+                                                            ? PData.wallsP[widget.index].url
                                                                     .toString()
                                                                     .replaceAll(
                                                                         "https://www.pexels.com/photo/", "")
@@ -837,34 +1061,45 @@ class FocusedMenuDetails extends StatelessWidget {
                                                                         "/",
                                                                         "")[0]
                                                                     .toUpperCase() +
-                                                                PData.wallsP[index].url
+                                                                PData.wallsP[widget.index].url
                                                                     .toString()
                                                                     .replaceAll(
                                                                         "https://www.pexels.com/photo/", "")
                                                                     .replaceAll(
                                                                         "-", " ")
                                                                     .replaceAll("/", "")
-                                                                    .substring(1, PData.wallsP[index].url.toString().replaceAll("https://www.pexels.com/photo/", "").replaceAll("-", " ").replaceAll("/", "").length - 7)
-                                                            : PData.wallsP[index].url.toString().replaceAll("https://www.pexels.com/photo/", "").replaceAll("-", " ").replaceAll("/", "")[0].toUpperCase() + PData.wallsP[index].url.toString().replaceAll("https://www.pexels.com/photo/", "").replaceAll("-", " ").replaceAll("/", "").substring(1),
+                                                                    .substring(1, PData.wallsP[widget.index].url.toString().replaceAll("https://www.pexels.com/photo/", "").replaceAll("-", " ").replaceAll("/", "").length - 7)
+                                                            : PData.wallsP[widget.index].url.toString().replaceAll("https://www.pexels.com/photo/", "").replaceAll("-", " ").replaceAll("/", "")[0].toUpperCase() + PData.wallsP[widget.index].url.toString().replaceAll("https://www.pexels.com/photo/", "").replaceAll("-", " ").replaceAll("/", "").substring(1),
                                                         style: Theme.of(context)
                                                             .textTheme
-                                                            .headline5,
+                                                            .headline5
+                                                            .copyWith(
+                                                                color: Theme.of(
+                                                                        context)
+                                                                    .accentColor),
                                                       ),
                                                     ),
                                                     Row(
                                                       children: [
                                                         Icon(
                                                           JamIcons.set_square,
-                                                          color: Colors.white70,
+                                                          color:
+                                                              Theme.of(context)
+                                                                  .accentColor,
                                                           size: 20,
                                                         ),
-                                                        SizedBox(width: 5),
+                                                        const SizedBox(
+                                                            width: 5),
                                                         Text(
-                                                          "${PData.wallsP[index].width.toString()}x${PData.wallsP[index].height.toString()}",
-                                                          style:
-                                                              Theme.of(context)
-                                                                  .textTheme
-                                                                  .headline6,
+                                                          "${PData.wallsP[widget.index].width.toString()}x${PData.wallsP[widget.index].height.toString()}",
+                                                          style: Theme.of(
+                                                                  context)
+                                                              .textTheme
+                                                              .headline6
+                                                              .copyWith(
+                                                                  color: Theme.of(
+                                                                          context)
+                                                                      .accentColor),
                                                         ),
                                                       ],
                                                     ),
@@ -875,32 +1110,35 @@ class FocusedMenuDetails extends StatelessWidget {
                                                 alignment:
                                                     Alignment.bottomRight,
                                                 child: GestureDetector(
+                                                  onTap: () async {
+                                                    Navigator.pop(context);
+                                                  },
                                                   child: Container(
                                                     decoration: BoxDecoration(
-                                                        color:
-                                                            Color(0xFF2F2F2F),
+                                                        color: Theme.of(context)
+                                                            .hintColor,
                                                         borderRadius:
-                                                            BorderRadius.only(
+                                                            const BorderRadius
+                                                                    .only(
                                                                 topLeft: Radius
                                                                     .circular(
                                                                         20),
                                                                 bottomRight: Radius
                                                                     .circular(
                                                                         20))),
-                                                    padding: EdgeInsets.all(0),
+                                                    padding:
+                                                        const EdgeInsets.all(0),
                                                     child: Padding(
-                                                      padding:
-                                                          EdgeInsets.fromLTRB(
-                                                              10, 5, 10, 5),
+                                                      padding: const EdgeInsets
+                                                              .fromLTRB(
+                                                          10, 5, 10, 5),
                                                       child: Icon(
                                                         JamIcons.close,
-                                                        color: Colors.white,
+                                                        color: Theme.of(context)
+                                                            .accentColor,
                                                       ),
                                                     ),
                                                   ),
-                                                  onTap: () async {
-                                                    Navigator.pop(context);
-                                                  },
                                                 ),
                                               )
                                             ],
@@ -909,20 +1147,21 @@ class FocusedMenuDetails extends StatelessWidget {
                                       ),
                                     ),
                                   )
-                                : provider == "Liked"
+                                : widget.provider == "Liked"
                                     ? Provider.of<FavouriteProvider>(context,
-                                                    listen: false)
-                                                .liked[index]["provider"] ==
+                                                        listen: false)
+                                                    .liked[widget.index]
+                                                ["provider"] ==
                                             "WallHaven"
                                         ? Positioned(
-                                            top: childOffset.dy +
-                                                childSize.height * 2 / 8,
-                                            left: childOffset.dx,
+                                            top: widget.childOffset.dy +
+                                                widget.childSize.height * 2 / 8,
+                                            left: widget.childOffset.dx,
                                             child: TweenAnimationBuilder(
-                                              duration:
-                                                  Duration(milliseconds: 200),
+                                              duration: const Duration(
+                                                  milliseconds: 200),
                                               builder: (BuildContext context,
-                                                  value, Widget child) {
+                                                  double value, Widget child) {
                                                 return Transform.scale(
                                                   scale: value,
                                                   alignment:
@@ -933,11 +1172,14 @@ class FocusedMenuDetails extends StatelessWidget {
                                               tween:
                                                   Tween(begin: 0.0, end: 1.0),
                                               child: Container(
-                                                width: childSize.width,
+                                                width: widget.childSize.width,
                                                 height:
-                                                    childSize.height * 6 / 8,
+                                                    widget.childSize.height *
+                                                        6 /
+                                                        8,
                                                 decoration: BoxDecoration(
-                                                  color: Color(0xFF2F2F2F),
+                                                  color: Theme.of(context)
+                                                      .hintColor,
                                                   borderRadius:
                                                       const BorderRadius.all(
                                                           Radius.circular(
@@ -968,13 +1210,14 @@ class FocusedMenuDetails extends StatelessWidget {
                                                                 pressElevation:
                                                                     5,
                                                                 padding:
-                                                                    EdgeInsets
-                                                                        .fromLTRB(
-                                                                            14,
-                                                                            11,
-                                                                            14,
-                                                                            11),
-                                                                avatar: Icon(
+                                                                    const EdgeInsets
+                                                                            .fromLTRB(
+                                                                        14,
+                                                                        11,
+                                                                        14,
+                                                                        11),
+                                                                avatar:
+                                                                    const Icon(
                                                                   JamIcons
                                                                       .ordered_list,
                                                                   color: Colors
@@ -989,7 +1232,7 @@ class FocusedMenuDetails extends StatelessWidget {
                                                                               context,
                                                                               listen:
                                                                                   false)
-                                                                          .liked[index]
+                                                                          .liked[widget.index]
                                                                               [
                                                                               "category"]
                                                                           .toString()[
@@ -1000,7 +1243,7 @@ class FocusedMenuDetails extends StatelessWidget {
                                                                               listen:
                                                                                   false)
                                                                           .liked[
-                                                                              index]
+                                                                              widget.index]
                                                                               [
                                                                               "category"]
                                                                           .toString()
@@ -1031,52 +1274,71 @@ class FocusedMenuDetails extends StatelessWidget {
                                                                         listen:
                                                                             false)
                                                                     .liked[
-                                                                        index]
+                                                                        widget
+                                                                            .index]
                                                                         ["id"]
                                                                     .toString()
                                                                     .toUpperCase(),
                                                                 style: Theme.of(
                                                                         context)
                                                                     .textTheme
-                                                                    .headline5,
+                                                                    .headline5
+                                                                    .copyWith(
+                                                                        color: Theme.of(context)
+                                                                            .accentColor),
                                                               ),
                                                             ),
                                                             Row(
                                                               children: [
-                                                                Icon(
+                                                                const Icon(
                                                                   JamIcons.eye,
                                                                   size: 20,
                                                                   color: Colors
                                                                       .white70,
                                                                 ),
-                                                                SizedBox(
+                                                                const SizedBox(
                                                                     width: 10),
                                                                 Text(
-                                                                  "Views: ${Provider.of<FavouriteProvider>(context, listen: false).liked[index]["views"].toString()}",
+                                                                  "Views: ${Provider.of<FavouriteProvider>(context, listen: false).liked[widget.index]["views"].toString()}",
                                                                   style: Theme.of(
                                                                           context)
                                                                       .textTheme
-                                                                      .bodyText2,
+                                                                      .bodyText2
+                                                                      .copyWith(
+                                                                          color:
+                                                                              Theme.of(context).accentColor),
                                                                 ),
                                                               ],
                                                             ),
                                                             Row(
                                                               children: [
-                                                                Icon(
+                                                                const Icon(
                                                                   JamIcons
                                                                       .set_square,
                                                                   size: 20,
                                                                   color: Colors
                                                                       .white70,
                                                                 ),
-                                                                SizedBox(
+                                                                const SizedBox(
                                                                     width: 10),
                                                                 Text(
-                                                                  "${Provider.of<FavouriteProvider>(context, listen: false).liked[index]["resolution"].toString()}",
+                                                                  Provider.of<FavouriteProvider>(
+                                                                          context,
+                                                                          listen:
+                                                                              false)
+                                                                      .liked[
+                                                                          widget
+                                                                              .index]
+                                                                          [
+                                                                          "resolution"]
+                                                                      .toString(),
                                                                   style: Theme.of(
                                                                           context)
                                                                       .textTheme
-                                                                      .bodyText2,
+                                                                      .bodyText2
+                                                                      .copyWith(
+                                                                          color:
+                                                                              Theme.of(context).accentColor),
                                                                 ),
                                                               ],
                                                             ),
@@ -1087,8 +1349,12 @@ class FocusedMenuDetails extends StatelessWidget {
                                                         alignment: Alignment
                                                             .bottomRight,
                                                         child: GestureDetector(
+                                                          onTap: () async {
+                                                            Navigator.pop(
+                                                                context);
+                                                          },
                                                           child: Container(
-                                                            decoration: BoxDecoration(
+                                                            decoration: const BoxDecoration(
                                                                 color: Color(
                                                                     0xFF2F2F2F),
                                                                 borderRadius: BorderRadius.only(
@@ -1099,27 +1365,24 @@ class FocusedMenuDetails extends StatelessWidget {
                                                                         Radius.circular(
                                                                             20))),
                                                             padding:
-                                                                EdgeInsets.all(
-                                                                    0),
+                                                                const EdgeInsets
+                                                                    .all(0),
                                                             child: Padding(
                                                               padding:
-                                                                  EdgeInsets
-                                                                      .fromLTRB(
-                                                                          10,
-                                                                          5,
-                                                                          10,
-                                                                          5),
+                                                                  const EdgeInsets
+                                                                          .fromLTRB(
+                                                                      10,
+                                                                      5,
+                                                                      10,
+                                                                      5),
                                                               child: Icon(
                                                                 JamIcons.close,
-                                                                color: Colors
-                                                                    .white,
+                                                                color: Theme.of(
+                                                                        context)
+                                                                    .accentColor,
                                                               ),
                                                             ),
                                                           ),
-                                                          onTap: () async {
-                                                            Navigator.pop(
-                                                                context);
-                                                          },
                                                         ),
                                                       )
                                                     ],
@@ -1129,20 +1392,24 @@ class FocusedMenuDetails extends StatelessWidget {
                                             ),
                                           )
                                         : Provider.of<FavouriteProvider>(
-                                                        context,
-                                                        listen: false)
-                                                    .liked[index]["provider"] ==
+                                                            context,
+                                                            listen: false)
+                                                        .liked[widget.index]
+                                                    ["provider"] ==
                                                 "Prism"
                                             ? Positioned(
-                                                top: childOffset.dy +
-                                                    childSize.height * 2 / 8,
-                                                left: childOffset.dx,
+                                                top: widget.childOffset.dy +
+                                                    widget.childSize.height *
+                                                        2 /
+                                                        8,
+                                                left: widget.childOffset.dx,
                                                 child: TweenAnimationBuilder(
-                                                  duration: Duration(
+                                                  duration: const Duration(
                                                       milliseconds: 200),
                                                   builder:
                                                       (BuildContext context,
-                                                          value, Widget child) {
+                                                          double value,
+                                                          Widget child) {
                                                     return Transform.scale(
                                                       scale: value,
                                                       alignment:
@@ -1153,12 +1420,15 @@ class FocusedMenuDetails extends StatelessWidget {
                                                   tween: Tween(
                                                       begin: 0.0, end: 1.0),
                                                   child: Container(
-                                                    width: childSize.width,
-                                                    height: childSize.height *
+                                                    width:
+                                                        widget.childSize.width,
+                                                    height: widget
+                                                            .childSize.height *
                                                         6 /
                                                         8,
                                                     decoration: BoxDecoration(
-                                                      color: Color(0xFF2F2F2F),
+                                                      color: Theme.of(context)
+                                                          .hintColor,
                                                       borderRadius:
                                                           const BorderRadius
                                                                   .all(
@@ -1195,13 +1465,13 @@ class FocusedMenuDetails extends StatelessWidget {
                                                                     pressElevation:
                                                                         5,
                                                                     padding:
-                                                                        EdgeInsets.fromLTRB(
+                                                                        const EdgeInsets.fromLTRB(
                                                                             14,
                                                                             11,
                                                                             14,
                                                                             11),
                                                                     avatar:
-                                                                        Icon(
+                                                                        const Icon(
                                                                       JamIcons
                                                                           .camera,
                                                                       color: Colors
@@ -1213,13 +1483,13 @@ class FocusedMenuDetails extends StatelessWidget {
                                                                             .black,
                                                                     label: Text(
                                                                       Provider.of<FavouriteProvider>(context, listen: false)
-                                                                              .liked[index][
+                                                                              .liked[widget.index][
                                                                                   "photographer"]
                                                                               .toString()[
                                                                                   0]
                                                                               .toUpperCase() +
                                                                           Provider.of<FavouriteProvider>(context, listen: false)
-                                                                              .liked[index]["photographer"]
+                                                                              .liked[widget.index]["photographer"]
                                                                               .toString()
                                                                               .substring(1),
                                                                       style: Theme.of(
@@ -1247,7 +1517,7 @@ class FocusedMenuDetails extends StatelessWidget {
                                                                             listen:
                                                                                 false)
                                                                         .liked[
-                                                                            index]
+                                                                            widget.index]
                                                                             [
                                                                             "id"]
                                                                         .toString()
@@ -1255,48 +1525,71 @@ class FocusedMenuDetails extends StatelessWidget {
                                                                     style: Theme.of(
                                                                             context)
                                                                         .textTheme
-                                                                        .headline5,
+                                                                        .headline5
+                                                                        .copyWith(
+                                                                            color:
+                                                                                Theme.of(context).accentColor),
                                                                   ),
                                                                 ),
                                                                 Row(
                                                                   children: [
-                                                                    Icon(
+                                                                    const Icon(
                                                                       JamIcons
                                                                           .save,
                                                                       size: 20,
                                                                       color: Colors
                                                                           .white70,
                                                                     ),
-                                                                    SizedBox(
+                                                                    const SizedBox(
                                                                         width:
                                                                             10),
                                                                     Text(
-                                                                      "${Provider.of<FavouriteProvider>(context, listen: false).liked[index]["size"].toString()}",
+                                                                      Provider.of<FavouriteProvider>(
+                                                                              context,
+                                                                              listen:
+                                                                                  false)
+                                                                          .liked[
+                                                                              widget.index]
+                                                                              [
+                                                                              "size"]
+                                                                          .toString(),
                                                                       style: Theme.of(
                                                                               context)
                                                                           .textTheme
-                                                                          .bodyText2,
+                                                                          .bodyText2
+                                                                          .copyWith(
+                                                                              color: Theme.of(context).accentColor),
                                                                     ),
                                                                   ],
                                                                 ),
                                                                 Row(
                                                                   children: [
-                                                                    Icon(
+                                                                    const Icon(
                                                                       JamIcons
                                                                           .set_square,
                                                                       size: 20,
                                                                       color: Colors
                                                                           .white70,
                                                                     ),
-                                                                    SizedBox(
+                                                                    const SizedBox(
                                                                         width:
                                                                             10),
                                                                     Text(
-                                                                      "${Provider.of<FavouriteProvider>(context, listen: false).liked[index]["resolution"].toString()}",
+                                                                      Provider.of<FavouriteProvider>(
+                                                                              context,
+                                                                              listen:
+                                                                                  false)
+                                                                          .liked[
+                                                                              widget.index]
+                                                                              [
+                                                                              "resolution"]
+                                                                          .toString(),
                                                                       style: Theme.of(
                                                                               context)
                                                                           .textTheme
-                                                                          .bodyText2,
+                                                                          .bodyText2
+                                                                          .copyWith(
+                                                                              color: Theme.of(context).accentColor),
                                                                     ),
                                                                   ],
                                                                 ),
@@ -1308,8 +1601,12 @@ class FocusedMenuDetails extends StatelessWidget {
                                                                 .bottomRight,
                                                             child:
                                                                 GestureDetector(
+                                                              onTap: () async {
+                                                                Navigator.pop(
+                                                                    context);
+                                                              },
                                                               child: Container(
-                                                                decoration: BoxDecoration(
+                                                                decoration: const BoxDecoration(
                                                                     color: Color(
                                                                         0xFF2F2F2F),
                                                                     borderRadius: BorderRadius.only(
@@ -1319,11 +1616,12 @@ class FocusedMenuDetails extends StatelessWidget {
                                                                         bottomRight:
                                                                             Radius.circular(20))),
                                                                 padding:
-                                                                    EdgeInsets
+                                                                    const EdgeInsets
                                                                         .all(0),
                                                                 child: Padding(
-                                                                  padding: EdgeInsets
-                                                                      .fromLTRB(
+                                                                  padding:
+                                                                      const EdgeInsets
+                                                                              .fromLTRB(
                                                                           10,
                                                                           5,
                                                                           10,
@@ -1331,15 +1629,12 @@ class FocusedMenuDetails extends StatelessWidget {
                                                                   child: Icon(
                                                                     JamIcons
                                                                         .close,
-                                                                    color: Colors
-                                                                        .white,
+                                                                    color: Theme.of(
+                                                                            context)
+                                                                        .accentColor,
                                                                   ),
                                                                 ),
                                                               ),
-                                                              onTap: () async {
-                                                                Navigator.pop(
-                                                                    context);
-                                                              },
                                                             ),
                                                           )
                                                         ],
@@ -1351,22 +1646,23 @@ class FocusedMenuDetails extends StatelessWidget {
                                             : Provider.of<FavouriteProvider>(
                                                                 context,
                                                                 listen: false)
-                                                            .liked[index]
+                                                            .liked[widget.index]
                                                         ["provider"] ==
                                                     "Pexels"
                                                 ? Positioned(
-                                                    top: childOffset.dy +
-                                                        childSize.height *
+                                                    top: widget.childOffset.dy +
+                                                        widget.childSize
+                                                                .height *
                                                             1 /
                                                             2,
-                                                    left: childOffset.dx,
+                                                    left: widget.childOffset.dx,
                                                     child:
                                                         TweenAnimationBuilder(
-                                                      duration: Duration(
+                                                      duration: const Duration(
                                                           milliseconds: 200),
                                                       builder:
                                                           (BuildContext context,
-                                                              value,
+                                                              double value,
                                                               Widget child) {
                                                         return Transform.scale(
                                                           scale: value,
@@ -1378,18 +1674,18 @@ class FocusedMenuDetails extends StatelessWidget {
                                                       tween: Tween(
                                                           begin: 0.0, end: 1.0),
                                                       child: Container(
-                                                        width: childSize.width,
-                                                        height:
-                                                            childSize.height *
-                                                                1 /
-                                                                2,
+                                                        width: widget
+                                                            .childSize.width,
+                                                        height: widget.childSize
+                                                                .height *
+                                                            1 /
+                                                            2,
                                                         decoration:
-                                                            BoxDecoration(
+                                                            const BoxDecoration(
                                                           color:
                                                               Color(0xFF2F2F2F),
                                                           borderRadius:
-                                                              const BorderRadius
-                                                                      .all(
+                                                              BorderRadius.all(
                                                                   Radius
                                                                       .circular(
                                                                           20.0)),
@@ -1425,7 +1721,7 @@ class FocusedMenuDetails extends StatelessWidget {
                                                                     ActionChip(
                                                                         pressElevation:
                                                                             5,
-                                                                        padding: EdgeInsets.fromLTRB(
+                                                                        padding: const EdgeInsets.fromLTRB(
                                                                             14,
                                                                             11,
                                                                             14,
@@ -1433,7 +1729,7 @@ class FocusedMenuDetails extends StatelessWidget {
                                                                         backgroundColor:
                                                                             Colors
                                                                                 .black,
-                                                                        avatar: Icon(
+                                                                        avatar: const Icon(
                                                                             JamIcons
                                                                                 .camera,
                                                                             color: Colors
@@ -1443,7 +1739,7 @@ class FocusedMenuDetails extends StatelessWidget {
                                                                         label:
                                                                             Text(
                                                                           Provider.of<FavouriteProvider>(context, listen: false)
-                                                                              .liked[index]["photographer"]
+                                                                              .liked[widget.index]["photographer"]
                                                                               .toString(),
                                                                           style: Theme.of(context)
                                                                               .textTheme
@@ -1460,20 +1756,21 @@ class FocusedMenuDetails extends StatelessWidget {
                                                                           JamIcons
                                                                               .set_square,
                                                                           color:
-                                                                              Colors.white70,
+                                                                              Theme.of(context).accentColor,
                                                                           size:
                                                                               20,
                                                                         ),
-                                                                        SizedBox(
+                                                                        const SizedBox(
                                                                             width:
                                                                                 5),
                                                                         Text(
                                                                           Provider.of<FavouriteProvider>(context, listen: false)
-                                                                              .liked[index]["resolution"]
+                                                                              .liked[widget.index]["resolution"]
                                                                               .toString(),
                                                                           style: Theme.of(context)
                                                                               .textTheme
-                                                                              .headline6,
+                                                                              .bodyText2
+                                                                              .copyWith(color: Theme.of(context).accentColor),
                                                                         ),
                                                                       ],
                                                                     ),
@@ -1485,9 +1782,14 @@ class FocusedMenuDetails extends StatelessWidget {
                                                                     .bottomRight,
                                                                 child:
                                                                     GestureDetector(
+                                                                  onTap:
+                                                                      () async {
+                                                                    Navigator.pop(
+                                                                        context);
+                                                                  },
                                                                   child:
                                                                       Container(
-                                                                    decoration: BoxDecoration(
+                                                                    decoration: const BoxDecoration(
                                                                         color: Color(
                                                                             0xFF2F2F2F),
                                                                         borderRadius: BorderRadius.only(
@@ -1495,12 +1797,12 @@ class FocusedMenuDetails extends StatelessWidget {
                                                                                 Radius.circular(20),
                                                                             bottomRight: Radius.circular(20))),
                                                                     padding:
-                                                                        EdgeInsets
+                                                                        const EdgeInsets
                                                                             .all(0),
                                                                     child:
                                                                         Padding(
-                                                                      padding: EdgeInsets
-                                                                          .fromLTRB(
+                                                                      padding:
+                                                                          const EdgeInsets.fromLTRB(
                                                                               10,
                                                                               5,
                                                                               10,
@@ -1509,16 +1811,11 @@ class FocusedMenuDetails extends StatelessWidget {
                                                                           Icon(
                                                                         JamIcons
                                                                             .close,
-                                                                        color: Colors
-                                                                            .white,
+                                                                        color: Theme.of(context)
+                                                                            .accentColor,
                                                                       ),
                                                                     ),
                                                                   ),
-                                                                  onTap:
-                                                                      () async {
-                                                                    Navigator.pop(
-                                                                        context);
-                                                                  },
                                                                 ),
                                                               )
                                                             ],
@@ -1528,18 +1825,19 @@ class FocusedMenuDetails extends StatelessWidget {
                                                     ),
                                                   )
                                                 : Positioned(
-                                                    top: childOffset.dy +
-                                                        childSize.height *
+                                                    top: widget.childOffset.dy +
+                                                        widget.childSize
+                                                                .height *
                                                             1 /
                                                             2,
-                                                    left: childOffset.dx,
+                                                    left: widget.childOffset.dx,
                                                     child:
                                                         TweenAnimationBuilder(
-                                                      duration: Duration(
+                                                      duration: const Duration(
                                                           milliseconds: 200),
                                                       builder:
                                                           (BuildContext context,
-                                                              value,
+                                                              double value,
                                                               Widget child) {
                                                         return Transform.scale(
                                                           scale: value,
@@ -1551,18 +1849,18 @@ class FocusedMenuDetails extends StatelessWidget {
                                                       tween: Tween(
                                                           begin: 0.0, end: 1.0),
                                                       child: Container(
-                                                        width: childSize.width,
-                                                        height:
-                                                            childSize.height *
-                                                                1 /
-                                                                2,
+                                                        width: widget
+                                                            .childSize.width,
+                                                        height: widget.childSize
+                                                                .height *
+                                                            1 /
+                                                            2,
                                                         decoration:
-                                                            BoxDecoration(
+                                                            const BoxDecoration(
                                                           color:
                                                               Color(0xFF2F2F2F),
                                                           borderRadius:
-                                                              const BorderRadius
-                                                                      .all(
+                                                              BorderRadius.all(
                                                                   Radius
                                                                       .circular(
                                                                           20.0)),
@@ -1601,19 +1899,19 @@ class FocusedMenuDetails extends StatelessWidget {
                                                                           JamIcons
                                                                               .heart_f,
                                                                           color:
-                                                                              Colors.white70,
+                                                                              Theme.of(context).accentColor,
                                                                           size:
                                                                               20,
                                                                         ),
-                                                                        SizedBox(
+                                                                        const SizedBox(
                                                                             width:
                                                                                 5),
                                                                         Text(
-                                                                          "Likes: " +
-                                                                              Provider.of<FavouriteProvider>(context, listen: false).liked[index]["fav"].toString(),
+                                                                          "Likes: ${Provider.of<FavouriteProvider>(context, listen: false).liked[widget.index]["fav"]}",
                                                                           style: Theme.of(context)
                                                                               .textTheme
-                                                                              .headline6,
+                                                                              .headline6
+                                                                              .copyWith(color: Theme.of(context).accentColor),
                                                                         ),
                                                                       ],
                                                                     ),
@@ -1623,19 +1921,19 @@ class FocusedMenuDetails extends StatelessWidget {
                                                                           JamIcons
                                                                               .eye,
                                                                           color:
-                                                                              Colors.white70,
+                                                                              Theme.of(context).accentColor,
                                                                           size:
                                                                               20,
                                                                         ),
-                                                                        SizedBox(
+                                                                        const SizedBox(
                                                                             width:
                                                                                 5),
                                                                         Text(
-                                                                          "Views: " +
-                                                                              Provider.of<FavouriteProvider>(context, listen: false).liked[index]["views"].toString(),
+                                                                          "Views: ${Provider.of<FavouriteProvider>(context, listen: false).liked[widget.index]["views"]}",
                                                                           style: Theme.of(context)
                                                                               .textTheme
-                                                                              .headline6,
+                                                                              .headline6
+                                                                              .copyWith(color: Theme.of(context).accentColor),
                                                                         ),
                                                                       ],
                                                                     ),
@@ -1645,20 +1943,21 @@ class FocusedMenuDetails extends StatelessWidget {
                                                                           JamIcons
                                                                               .set_square,
                                                                           color:
-                                                                              Colors.white70,
+                                                                              Theme.of(context).accentColor,
                                                                           size:
                                                                               20,
                                                                         ),
-                                                                        SizedBox(
+                                                                        const SizedBox(
                                                                             width:
                                                                                 5),
                                                                         Text(
                                                                           Provider.of<FavouriteProvider>(context, listen: false)
-                                                                              .liked[index]["resolution"]
+                                                                              .liked[widget.index]["resolution"]
                                                                               .toString(),
                                                                           style: Theme.of(context)
                                                                               .textTheme
-                                                                              .headline6,
+                                                                              .headline6
+                                                                              .copyWith(color: Theme.of(context).accentColor),
                                                                         ),
                                                                       ],
                                                                     ),
@@ -1670,9 +1969,14 @@ class FocusedMenuDetails extends StatelessWidget {
                                                                     .bottomRight,
                                                                 child:
                                                                     GestureDetector(
+                                                                  onTap:
+                                                                      () async {
+                                                                    Navigator.pop(
+                                                                        context);
+                                                                  },
                                                                   child:
                                                                       Container(
-                                                                    decoration: BoxDecoration(
+                                                                    decoration: const BoxDecoration(
                                                                         color: Color(
                                                                             0xFF2F2F2F),
                                                                         borderRadius: BorderRadius.only(
@@ -1680,12 +1984,12 @@ class FocusedMenuDetails extends StatelessWidget {
                                                                                 Radius.circular(20),
                                                                             bottomRight: Radius.circular(20))),
                                                                     padding:
-                                                                        EdgeInsets
+                                                                        const EdgeInsets
                                                                             .all(0),
                                                                     child:
                                                                         Padding(
-                                                                      padding: EdgeInsets
-                                                                          .fromLTRB(
+                                                                      padding:
+                                                                          const EdgeInsets.fromLTRB(
                                                                               10,
                                                                               5,
                                                                               10,
@@ -1694,16 +1998,11 @@ class FocusedMenuDetails extends StatelessWidget {
                                                                           Icon(
                                                                         JamIcons
                                                                             .close,
-                                                                        color: Colors
-                                                                            .white,
+                                                                        color: Theme.of(context)
+                                                                            .accentColor,
                                                                       ),
                                                                     ),
                                                                   ),
-                                                                  onTap:
-                                                                      () async {
-                                                                    Navigator.pop(
-                                                                        context);
-                                                                  },
                                                                 ),
                                                               )
                                                             ],
@@ -1713,13 +2012,14 @@ class FocusedMenuDetails extends StatelessWidget {
                                                     ),
                                                   )
                                     : Positioned(
-                                        top: childOffset.dy +
-                                            childSize.height * 2 / 8,
-                                        left: childOffset.dx,
+                                        top: widget.childOffset.dy +
+                                            widget.childSize.height * 2 / 8,
+                                        left: widget.childOffset.dx,
                                         child: TweenAnimationBuilder(
-                                          duration: Duration(milliseconds: 200),
-                                          builder: (BuildContext context, value,
-                                              Widget child) {
+                                          duration:
+                                              const Duration(milliseconds: 200),
+                                          builder: (BuildContext context,
+                                              double value, Widget child) {
                                             return Transform.scale(
                                               scale: value,
                                               alignment: Alignment.bottomRight,
@@ -1728,10 +2028,12 @@ class FocusedMenuDetails extends StatelessWidget {
                                           },
                                           tween: Tween(begin: 0.0, end: 1.0),
                                           child: Container(
-                                            width: childSize.width,
-                                            height: childSize.height * 6 / 8,
+                                            width: widget.childSize.width,
+                                            height:
+                                                widget.childSize.height * 6 / 8,
                                             decoration: BoxDecoration(
-                                              color: Color(0xFF2F2F2F),
+                                              color:
+                                                  Theme.of(context).hintColor,
                                               borderRadius:
                                                   const BorderRadius.all(
                                                       Radius.circular(20.0)),
@@ -1757,19 +2059,24 @@ class FocusedMenuDetails extends StatelessWidget {
                                                       children: <Widget>[
                                                         ActionChip(
                                                             pressElevation: 5,
-                                                            padding: EdgeInsets
-                                                                .fromLTRB(14,
-                                                                    11, 14, 11),
+                                                            padding:
+                                                                const EdgeInsets
+                                                                        .fromLTRB(
+                                                                    14,
+                                                                    11,
+                                                                    14,
+                                                                    11),
                                                             backgroundColor:
                                                                 Colors.black,
-                                                            avatar: Icon(
+                                                            avatar: const Icon(
                                                                 JamIcons.camera,
                                                                 color: Colors
                                                                     .white,
                                                                 size: 20),
                                                             label: Text(
                                                               PData
-                                                                  .wallsC[index]
+                                                                  .wallsC[widget
+                                                                      .index]
                                                                   .photographer
                                                                   .toString(),
                                                               style: Theme.of(
@@ -1788,7 +2095,7 @@ class FocusedMenuDetails extends StatelessWidget {
                                                                       .fromLTRB(
                                                                   0, 5, 0, 10),
                                                           child: Text(
-                                                            PData.wallsC[index].url
+                                                            PData.wallsC[widget.index].url
                                                                         .toString()
                                                                         .replaceAll(
                                                                             "https://www.pexels.com/photo/", "")
@@ -1798,23 +2105,22 @@ class FocusedMenuDetails extends StatelessWidget {
                                                                             "/", "")
                                                                         .length >
                                                                     8
-                                                                ? PData.wallsC[index].url.toString().replaceAll("https://www.pexels.com/photo/", "").replaceAll("-", " ").replaceAll("/", "")[0].toUpperCase() +
-                                                                    PData.wallsC[index].url
+                                                                ? PData.wallsC[widget.index].url.toString().replaceAll("https://www.pexels.com/photo/", "").replaceAll("-", " ").replaceAll("/", "")[0].toUpperCase() +
+                                                                    PData.wallsC[widget.index].url
                                                                         .toString()
                                                                         .replaceAll(
                                                                             "https://www.pexels.com/photo/", "")
                                                                         .replaceAll(
-                                                                            "-",
-                                                                            " ")
+                                                                            "-", " ")
                                                                         .replaceAll(
                                                                             "/", "")
                                                                         .substring(
                                                                             1,
-                                                                            PData.wallsC[index].url.toString().replaceAll("https://www.pexels.com/photo/", "").replaceAll("-", " ").replaceAll("/", "").length -
+                                                                            PData.wallsC[widget.index].url.toString().replaceAll("https://www.pexels.com/photo/", "").replaceAll("-", " ").replaceAll("/", "").length -
                                                                                 7)
-                                                                : PData.wallsC[index].url.toString().replaceAll("https://www.pexels.com/photo/", "").replaceAll("-", " ").replaceAll("/", "")[0].toUpperCase() +
+                                                                : PData.wallsC[widget.index].url.toString().replaceAll("https://www.pexels.com/photo/", "").replaceAll("-", " ").replaceAll("/", "")[0].toUpperCase() +
                                                                     PData
-                                                                        .wallsC[index]
+                                                                        .wallsC[widget.index]
                                                                         .url
                                                                         .toString()
                                                                         .replaceAll("https://www.pexels.com/photo/", "")
@@ -1824,25 +2130,34 @@ class FocusedMenuDetails extends StatelessWidget {
                                                             style: Theme.of(
                                                                     context)
                                                                 .textTheme
-                                                                .headline5,
+                                                                .headline5
+                                                                .copyWith(
+                                                                    color: Theme.of(
+                                                                            context)
+                                                                        .accentColor),
                                                           ),
                                                         ),
                                                         Row(
                                                           children: [
-                                                            Icon(
+                                                            const Icon(
                                                               JamIcons
                                                                   .set_square,
                                                               color: Colors
                                                                   .white70,
                                                               size: 20,
                                                             ),
-                                                            SizedBox(width: 5),
+                                                            const SizedBox(
+                                                                width: 5),
                                                             Text(
-                                                              "${PData.wallsC[index].width.toString()}x${PData.wallsC[index].height.toString()}",
+                                                              "${PData.wallsC[widget.index].width.toString()}x${PData.wallsC[widget.index].height.toString()}",
                                                               style: Theme.of(
                                                                       context)
                                                                   .textTheme
-                                                                  .headline6,
+                                                                  .headline6
+                                                                  .copyWith(
+                                                                      color: Theme.of(
+                                                                              context)
+                                                                          .accentColor),
                                                             ),
                                                           ],
                                                         ),
@@ -1853,8 +2168,11 @@ class FocusedMenuDetails extends StatelessWidget {
                                                     alignment:
                                                         Alignment.bottomRight,
                                                     child: GestureDetector(
+                                                      onTap: () async {
+                                                        Navigator.pop(context);
+                                                      },
                                                       child: Container(
-                                                        decoration: BoxDecoration(
+                                                        decoration: const BoxDecoration(
                                                             color: Color(
                                                                 0xFF2F2F2F),
                                                             borderRadius: BorderRadius.only(
@@ -1865,20 +2183,21 @@ class FocusedMenuDetails extends StatelessWidget {
                                                                     .circular(
                                                                         20))),
                                                         padding:
-                                                            EdgeInsets.all(0),
+                                                            const EdgeInsets
+                                                                .all(0),
                                                         child: Padding(
-                                                          padding: EdgeInsets
-                                                              .fromLTRB(
+                                                          padding:
+                                                              const EdgeInsets
+                                                                      .fromLTRB(
                                                                   10, 5, 10, 5),
                                                           child: Icon(
                                                             JamIcons.close,
-                                                            color: Colors.white,
+                                                            color: Theme.of(
+                                                                    context)
+                                                                .accentColor,
                                                           ),
                                                         ),
                                                       ),
-                                                      onTap: () async {
-                                                        Navigator.pop(context);
-                                                      },
                                                     ),
                                                   )
                                                 ],
@@ -1892,95 +2211,102 @@ class FocusedMenuDetails extends StatelessWidget {
               left: leftOffset,
               child: SetWallpaperButton(
                 colorChanged: false,
-                url: provider == "WallHaven"
-                    ? WData.walls[index].path.toString()
-                    : provider == "Prism"
-                        ? Data.subPrismWalls[index]["wallpaper_url"].toString()
-                        : provider == "ProfileWall"
+                url: widget.provider == "WallHaven"
+                    ? WData.walls[widget.index].path.toString()
+                    : widget.provider == "Prism"
+                        ? Data.subPrismWalls[widget.index]["wallpaper_url"]
+                            .toString()
+                        : widget.provider == "ProfileWall"
                             ? Provider.of<ProfileWallProvider>(context,
                                     listen: false)
-                                .profileWalls[index]["wallpaper_url"]
+                                .profileWalls[widget.index]["wallpaper_url"]
                                 .toString()
-                            : provider == "UserProfileWall"
-                                ? UserData.userProfileWalls[index]
+                            : widget.provider == "UserProfileWall"
+                                ? UserData.userProfileWalls[widget.index]
                                         ["wallpaper_url"]
                                     .toString()
-                                : provider == "Pexels"
-                                    ? PData.wallsP[index].src["original"]
+                                : widget.provider == "Pexels"
+                                    ? PData.wallsP[widget.index].src["original"]
                                         .toString()
-                                    : provider == "Liked"
+                                    : widget.provider == "Liked"
                                         ? Provider.of<FavouriteProvider>(
                                                 context,
                                                 listen: false)
-                                            .liked[index]["url"]
+                                            .liked[widget.index]["url"]
                                             .toString()
-                                        : PData.wallsC[index].src["original"]
+                                        : PData.wallsC[widget.index]
+                                            .src["original"]
                                             .toString(),
               ),
             ),
             Positioned(
               top: topOffset - fabHeartTopOffset,
               left: leftOffset - fabHeartLeftOffset,
-              child: provider == "WallHaven"
+              child: widget.provider == "WallHaven"
                   ? FavouriteWallpaperButton(
-                      id: WData.walls[index].id.toString(),
+                      id: WData.walls[widget.index].id.toString(),
                       provider: "WallHaven",
-                      wallhaven: WData.walls[index],
+                      wallhaven: WData.walls[widget.index],
                       trash: false,
                     )
-                  : provider == "Prism"
+                  : widget.provider == "Prism"
                       ? FavouriteWallpaperButton(
-                          id: Data.subPrismWalls[index]["id"].toString(),
+                          id: Data.subPrismWalls[widget.index]["id"].toString(),
                           provider: "Prism",
-                          prism: Data.subPrismWalls[index],
+                          prism: Data.subPrismWalls[widget.index] as Map,
                           trash: false,
                         )
-                      : provider == "ProfileWall"
+                      : widget.provider == "ProfileWall"
                           ? FavouriteWallpaperButton(
                               id: Provider.of<ProfileWallProvider>(context,
                                       listen: false)
-                                  .profileWalls[index]["id"]
+                                  .profileWalls[widget.index]["id"]
                                   .toString(),
                               provider: "Prism",
                               prism: Provider.of<ProfileWallProvider>(context,
                                       listen: false)
-                                  .profileWalls[index],
+                                  .profileWalls[widget.index] as Map,
                               trash: false,
                             )
-                          : provider == "UserProfileWall"
+                          : widget.provider == "UserProfileWall"
                               ? FavouriteWallpaperButton(
-                                  id: UserData.userProfileWalls[index]["id"]
+                                  id: UserData.userProfileWalls[widget.index]
+                                          ["id"]
                                       .toString(),
                                   provider: "Prism",
-                                  prism: UserData.userProfileWalls[index],
+                                  prism: UserData.userProfileWalls[widget.index]
+                                      as Map,
                                   trash: false,
                                 )
-                              : provider == "Pexels"
+                              : widget.provider == "Pexels"
                                   ? FavouriteWallpaperButton(
-                                      id: PData.wallsP[index].id.toString(),
+                                      id: PData.wallsP[widget.index].id
+                                          .toString(),
                                       provider: "Pexels",
-                                      pexels: PData.wallsP[index],
+                                      pexels: PData.wallsP[widget.index],
                                       trash: false,
                                     )
-                                  : provider == "Liked"
+                                  : widget.provider == "Liked"
                                       ? FavouriteWallpaperButton(
                                           id: Provider.of<FavouriteProvider>(
                                                   context,
                                                   listen: false)
-                                              .liked[index]["id"]
+                                              .liked[widget.index]["id"]
                                               .toString(),
                                           provider:
                                               Provider.of<FavouriteProvider>(
                                                       context,
                                                       listen: false)
-                                                  .liked[index]["provider"]
+                                                  .liked[widget.index]
+                                                      ["provider"]
                                                   .toString(),
                                           trash: true,
                                         )
                                       : FavouriteWallpaperButton(
-                                          id: PData.wallsC[index].id.toString(),
+                                          id: PData.wallsC[widget.index].id
+                                              .toString(),
                                           provider: "Pexels",
-                                          pexels: PData.wallsC[index],
+                                          pexels: PData.wallsC[widget.index],
                                           trash: false,
                                         ),
             ),
@@ -1989,38 +2315,39 @@ class FocusedMenuDetails extends StatelessWidget {
               left: leftOffset + fabWallLeftOffset,
               child: DownloadButton(
                 colorChanged: false,
-                link: provider == "WallHaven"
-                    ? WData.walls[index].path.toString()
-                    : provider == "Prism"
-                        ? Data.subPrismWalls[index]["wallpaper_url"].toString()
-                        : provider == "ProfileWall"
+                link: widget.provider == "WallHaven"
+                    ? WData.walls[widget.index].path.toString()
+                    : widget.provider == "Prism"
+                        ? Data.subPrismWalls[widget.index]["wallpaper_url"]
+                            .toString()
+                        : widget.provider == "ProfileWall"
                             ? Provider.of<ProfileWallProvider>(context,
                                     listen: false)
-                                .profileWalls[index]["wallpaper_url"]
+                                .profileWalls[widget.index]["wallpaper_url"]
                                 .toString()
-                            : provider == "UserProfileWall"
-                                ? UserData.userProfileWalls[index]
+                            : widget.provider == "UserProfileWall"
+                                ? UserData.userProfileWalls[widget.index]
                                         ["wallpaper_url"]
                                     .toString()
-                                : provider == "Pexels"
-                                    ? PData.wallsP[index].src["original"]
+                                : widget.provider == "Pexels"
+                                    ? PData.wallsP[widget.index].src["original"]
                                         .toString()
-                                    : provider == "Liked"
+                                    : widget.provider == "Liked"
                                         ? Provider.of<FavouriteProvider>(
                                                 context,
                                                 listen: false)
-                                            .liked[index]["url"]
+                                            .liked[widget.index]["url"]
                                             .toString()
-                                        : PData.wallsC[index].src["original"]
+                                        : PData.wallsC[widget.index]
+                                            .src["original"]
                                             .toString(),
               ),
             ),
           ],
         ),
-      ),
-    );
+      );
     } catch (e) {
-      print(e.toString());
+      debugPrint(e.toString());
       Navigator.pop(context);
       return Container();
     }
@@ -2029,12 +2356,13 @@ class FocusedMenuDetails extends StatelessWidget {
 
 class HexColor extends Color {
   static int _getColorFromHex(String hexColor) {
-    hexColor = hexColor.toUpperCase().replaceAll("#", "");
-    if (hexColor.length == 6) {
-      hexColor = "FF" + hexColor;
+    final String heColor = hexColor.toUpperCase().replaceAll("#", "");
+    String hColor;
+    if (heColor.length == 6) {
+      hColor = "FF$heColor";
     }
-    return int.parse(hexColor, radix: 16);
+    return int.parse(hColor, radix: 16);
   }
 
-  HexColor(final String hexColor) : super(_getColorFromHex(hexColor));
+  HexColor(final String hColor) : super(_getColorFromHex(hColor));
 }

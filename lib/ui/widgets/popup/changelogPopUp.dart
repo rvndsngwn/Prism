@@ -1,14 +1,19 @@
 import 'package:Prism/theme/jam_icons_icons.dart';
+import 'package:Prism/theme/theme.dart';
+import 'package:Prism/theme/themeModel.dart';
+import 'package:animations/animations.dart';
 import 'package:flare_flutter/flare_actor.dart';
 import 'package:flutter/material.dart';
+import 'package:Prism/theme/config.dart' as config;
+import 'package:provider/provider.dart';
 
 void showChangelog(BuildContext context, Function func) {
   final controller = ScrollController();
-  Dialog aboutPopUp = Dialog(
-    shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(20)),
-    child: Container(
+  final AlertDialog aboutPopUp = AlertDialog(
+    shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(10)),
+    content: Container(
       decoration: BoxDecoration(
-          borderRadius: BorderRadius.circular(20),
+          borderRadius: BorderRadius.circular(10),
           color: Theme.of(context).primaryColor),
       width: MediaQuery.of(context).size.width * .78,
       child: Column(
@@ -19,25 +24,135 @@ void showChangelog(BuildContext context, Function func) {
             height: 150,
             width: MediaQuery.of(context).size.width * .78,
             decoration: BoxDecoration(
-                borderRadius: BorderRadius.only(
-                    topLeft: Radius.circular(20),
-                    topRight: Radius.circular(20)),
+                borderRadius: const BorderRadius.only(
+                    topLeft: Radius.circular(10),
+                    topRight: Radius.circular(10)),
                 color: Theme.of(context).hintColor),
-            child: FlareActor(
+            child: const FlareActor(
               "assets/animations/Changelog.flr",
-              isPaused: false,
-              alignment: Alignment.center,
               animation: "changelog",
             ),
           ),
           SizedBox(
-            height: 400,
+            height: 300,
             child: Scrollbar(
+              radius: const Radius.circular(500),
+              thickness: 5,
               controller: controller,
               isAlwaysShown: true,
               child: SingleChildScrollView(
                 controller: controller,
-                child: Column(mainAxisSize: MainAxisSize.min, children: [
+                child: Column(mainAxisSize: MainAxisSize.min, children: const [
+                  ChangeVersion(number: 'v2.6.1'),
+                  Change(
+                      icon: JamIcons.download,
+                      text: "Fixed wallpaper downloading in Android 11."),
+                  Change(
+                      icon: JamIcons.wrench,
+                      text: "Redesigned setups' info panel!"),
+                  Change(
+                      icon: JamIcons.instant_picture,
+                      text: "Now see your uploaded setups in your profile!"),
+                  Change(
+                      icon: JamIcons.heart,
+                      text: "Now see your favourite setups in your profile!"),
+                  Change(
+                      icon: JamIcons.tools, text: "Added more new animations!"),
+                  Change(
+                      icon: JamIcons.settings_alt,
+                      text: "Turned wallpaper optimisation off by default."),
+                  Change(icon: JamIcons.egg, text: "Added some easter eggs."),
+                  Change(
+                      icon: JamIcons.crop,
+                      text: "Added new crop ratios in wallpaper upload."),
+                  Change(
+                      icon: JamIcons.phone,
+                      text: "Added support for phones with smaller screens."),
+                  Change(
+                      icon: JamIcons.user_circle,
+                      text: "Redesigned Profile Page."),
+                  Change(
+                      icon: JamIcons.bug,
+                      text: "Minor bug fixes and improvements."),
+                  SizedBox(
+                    height: 15,
+                  ),
+                  ChangeVersion(number: 'v2.6.0'),
+                  Change(
+                      icon: JamIcons.instant_picture,
+                      text: "Setup uploading is out of beta."),
+                  Change(icon: JamIcons.wrench, text: "All new themes!"),
+                  Change(icon: JamIcons.brush, text: "Variants are now free!"),
+                  Change(
+                      icon: JamIcons.tools,
+                      text: "Optimised app for faster animations!"),
+                  Change(
+                      icon: JamIcons.settings_alt,
+                      text: "Improved settings page."),
+                  Change(icon: JamIcons.home, text: "Redesigned home."),
+                  Change(icon: JamIcons.grid, text: "Redesigned categories."),
+                  Change(
+                      icon: JamIcons.filter, text: "Added wallpaper filters."),
+                  Change(
+                      icon: JamIcons.database, text: "Improved data caching."),
+                  Change(
+                      icon: JamIcons.bug,
+                      text: "Major bug fixes and improvements."),
+                  SizedBox(
+                    height: 15,
+                  ),
+                  ChangeVersion(number: 'v2.5.7'),
+                  Change(
+                      icon: JamIcons.settings_alt,
+                      text: "Redesigned settings screen."),
+                  Change(
+                      icon: JamIcons.background_color,
+                      text: "Now customise accent color of the app."),
+                  Change(
+                      icon: JamIcons.share,
+                      text: "Now share setups and profiles."),
+                  Change(
+                      icon: JamIcons.twitter,
+                      text: "Now connect Twitter with your profile."),
+                  Change(
+                      icon: JamIcons.instagram,
+                      text: "Now connect Instagram with your profile."),
+                  Change(icon: JamIcons.android, text: "Redesigned app icon."),
+                  Change(
+                      icon: JamIcons.rocket,
+                      text: "Redesigned splash animation."),
+                  Change(
+                      icon: JamIcons.paper_plane,
+                      text: "Connected to Telegram group."),
+                  Change(
+                      icon: JamIcons.bug,
+                      text: "Minor bug fixes and improvements."),
+                  SizedBox(
+                    height: 15,
+                  ),
+                  ChangeVersion(number: 'v2.5.6'),
+                  Change(
+                      icon: JamIcons.upload, text: "Now upload setups in-app."),
+                  Change(
+                      icon: JamIcons.pictures,
+                      text: "Redesigned collections' screen."),
+                  Change(
+                      icon: JamIcons.clock, text: "Redesigned clock overlay."),
+                  Change(
+                      icon: JamIcons.instant_picture,
+                      text: "Redesigned setups' browser."),
+                  Change(
+                      icon: JamIcons.refresh,
+                      text: "Added wallpaper optimisation."),
+                  Change(
+                      icon: JamIcons.picture,
+                      text: "Fixed curated wallpapers not loading."),
+                  Change(
+                      icon: JamIcons.bug,
+                      text: "Major bug fixes and improvements."),
+                  SizedBox(
+                    height: 15,
+                  ),
                   ChangeVersion(number: 'v2.5.5'),
                   Change(
                       icon: JamIcons.upload,
@@ -312,37 +427,39 @@ void showChangelog(BuildContext context, Function func) {
               ),
             ),
           ),
-          SizedBox(
-            height: 25,
-          ),
-          FlatButton(
-            shape: StadiumBorder(),
-            color: Color(0xFFE57697),
-            onPressed: () {
-              Navigator.of(context).pop();
-              func();
-            },
-            child: Text(
-              'CLOSE',
-              style: TextStyle(
-                fontSize: 16.0,
-                color: Colors.white,
-              ),
-            ),
-          ),
-          SizedBox(
-            height: 15,
-          ),
         ],
       ),
     ),
+    actions: [
+      FlatButton(
+        shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(5)),
+        color: config.Colors().mainAccentColor(1),
+        onPressed: () {
+          Navigator.of(context).pop();
+          func();
+        },
+        child: const Text(
+          'CLOSE',
+          style: TextStyle(
+            fontSize: 16.0,
+            color: Colors.white,
+          ),
+        ),
+      ),
+    ],
+    contentPadding: const EdgeInsets.fromLTRB(0, 0, 0, 10),
+    backgroundColor: Theme.of(context).primaryColor,
+    actionsPadding: const EdgeInsets.fromLTRB(10, 0, 10, 0),
   );
-  showDialog(context: context, builder: (BuildContext context) => aboutPopUp);
+  showModal(
+      context: context,
+      configuration: const FadeScaleTransitionConfiguration(),
+      builder: (BuildContext context) => aboutPopUp);
 }
 
 class ChangeVersion extends StatelessWidget {
   final String number;
-  ChangeVersion({@required this.number});
+  const ChangeVersion({@required this.number});
   @override
   Widget build(BuildContext context) {
     return Column(
@@ -363,7 +480,7 @@ class ChangeVersion extends StatelessWidget {
             ),
           ],
         ),
-        SizedBox(
+        const SizedBox(
           height: 20,
         ),
       ],
@@ -374,7 +491,7 @@ class ChangeVersion extends StatelessWidget {
 class Change extends StatelessWidget {
   final IconData icon;
   final String text;
-  Change({@required this.icon, @required this.text});
+  const Change({@required this.icon, @required this.text});
   @override
   Widget build(BuildContext context) {
     return Column(
@@ -382,18 +499,21 @@ class Change extends StatelessWidget {
       mainAxisSize: MainAxisSize.min,
       children: <Widget>[
         Row(
-          crossAxisAlignment: CrossAxisAlignment.center,
-          mainAxisAlignment: MainAxisAlignment.start,
           children: [
-            SizedBox(
+            const SizedBox(
               width: 20,
             ),
             Icon(
               icon,
               size: 22,
-              color: Color(0xFFE57697),
+              color:
+                  Provider.of<ThemeModel>(context).currentTheme == kDarkTheme2
+                      ? config.Colors().mainAccentColor(1) == Colors.black
+                          ? Theme.of(context).accentColor
+                          : config.Colors().mainAccentColor(1)
+                      : config.Colors().mainAccentColor(1),
             ),
-            SizedBox(
+            const SizedBox(
               width: 20,
             ),
             Container(
@@ -408,7 +528,7 @@ class Change extends StatelessWidget {
             ),
           ],
         ),
-        SizedBox(
+        const SizedBox(
           height: 10,
         ),
       ],

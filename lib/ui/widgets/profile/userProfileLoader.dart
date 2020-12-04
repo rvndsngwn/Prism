@@ -1,11 +1,11 @@
-import 'package:Prism/ui/widgets/home/loading.dart';
+import 'package:Prism/ui/widgets/home/wallpapers/loading.dart';
 import 'package:Prism/ui/widgets/profile/userProfileGrid.dart';
 import 'package:flutter/material.dart';
 
 class UserProfileLoader extends StatefulWidget {
   final Future future;
   final String email;
-  UserProfileLoader({@required this.future, @required this.email});
+  const UserProfileLoader({@required this.future, @required this.email});
   @override
   _UserProfileLoaderState createState() => _UserProfileLoaderState();
 }
@@ -27,15 +27,14 @@ class _UserProfileLoaderState extends State<UserProfileLoader> {
         future: _future,
         builder: (ctx, snapshot) {
           if (snapshot == null) {
-            print("snapshot null");
-            return LoadingCards();
+            debugPrint("snapshot null");
+            return const LoadingCards();
           }
           if (snapshot.connectionState == ConnectionState.waiting ||
               snapshot.connectionState == ConnectionState.none) {
-            print("snapshot none, waiting");
-            return LoadingCards();
+            debugPrint("snapshot none, waiting");
+            return const LoadingCards();
           } else {
-            // print("snapshot done");
             return UserProfileGrid(
               email: widget.email,
             );

@@ -5,48 +5,88 @@
 
 ![flutter](https://img.shields.io/badge/Flutter-Framework-green?logo=flutter)
 ![Dart](https://img.shields.io/badge/Dart-Language-blue?logo=dart)
-![Play Store Downloads](https://img.shields.io/badge/Play%20Store%20Downloads-5K+-green.svg)
-![Play Store Rating](https://img.shields.io/badge/Play%20Store%20Rating-4.4-blue.svg)
+![Play Store Downloads](https://img.shields.io/badge/Play%20Store%20Downloads-10K+-green.svg)
+![Play Store Rating](https://img.shields.io/badge/Play%20Store%20Rating-4.6-blue.svg)
 ![Size](https://img.shields.io/github/repo-size/Hash-Studios/Prism?color=green)
 ![Release](https://img.shields.io/github/v/release/Hash-Studios/Prism)
 ![License](https://img.shields.io/github/license/Hash-Studios/Prism)
 ![Stars](https://img.shields.io/github/stars/Hash-Studios/Prism)
-<a href='https://twitter.com/PrismWallpapers'><img alt='Follow on Twitter' src='https://img.shields.io/twitter/follow/PrismWallpapers?color=green&label=Follow&logo=Twitter&style=plastic'/></a>
+<a href='https://twitter.com/PrismWallpapers'><img alt='Follow on Twitter' src='https://img.shields.io/twitter/follow/PrismWallpapers?color=green&label=Follow&logo=Twitter&style=flat'/></a>
+<a href='https://t.me/PrismWallpapers'><img alt='Join us on Telegram' src='https://img.shields.io/badge/Telegram-PrismWallpapers-blue?logo=telegram'/></a>
 
 </div>
 <a href='https://play.google.com/store/apps/details?id=com.hash.prism&pcampaignid=pcampaignidMKT-Other-global-all-co-prtnr-py-PartBadge-Mar2515-1'><img alt='Prism UI Mockup' src='demo/Prism_Mockup.png'/></a>
 
-Prism offers an exclusive collection of wallpapers that are beautifully hand-crafted for your very specific device. This exclusive collection is hand-picked from all around the world to give you the best illustration, graphics, and photographs that look amazing in any setup that you want. Now Prism also offers an exclusive range of home screen setups, that you can simply apply. Each setup includes a wallpaper, an icon pack and a widget.
+<b>Prism</b> brings you exclusive wallpapers & setups straight to your Android device.
+With unlimited downloads and favourites, you can be sure to never miss the best wallpapers & setups.
 
-Prism relies on its Community and [WallHaven](https://wallhaven.cc/help/api) and [Pexels](https://www.pexels.com/api/) APIs as its source of beautiful and large collection of Wallpapers. By utilizing their API, it provides the user with a fast and smooth experience filled with subtle animations and minimal design. The main goal of Prism is to make the smartphone customization experience, smooth and easy, yet giving the users amazing wallpapers, and features like downloading infinite (as much your storage allows) wallpapers or sharing the ones they like with others.
+Our main goal is to create an unimaginable self-sustainable experience where people can share their walls and setups with the world, and everyone can like, download, and apply them.
 
-Now users can upload wallpapers, which will be shown in the Community section. They can also view the wallpapers they uploaded in the Profile section. We generally take upto 24 hours for reviewing every wallpaper, but premium users get their wallpapers reviewed instantly.
+<b>➡WALLPAPERS</b>
+- High-Quality Wallpapers from [WallHaven](https://wallhaven.cc/help/api) and [Pexels](https://www.pexels.com/api/)
+- Beautiful wallpapers uploaded by verified users
+- Community wallpapers uploaded by users all around the world
+- Favourite, set, and share walls
+- Download the ones you like
+- Apply filters on wallpapers (Clarendon, Hudson, Mayfair, and 20+ more filters)
+- Edit and upload your wallpapers
+- Each wallpaper comes with 5 variants
+- Generate palette for any wallpaper
+- Search walls by keywords, color, or tags
+- Preview the wallpaper with clock and app icons before applying
+- Set any wallpaper on the home screen, lock screen or both
 
-Prism offers a never-ending feed of wallpapers on its home screen. It also has a Curated section that is filled with the best photos/wallpapers updated every day. It also features categories like Abstract, Nature, 4K, Art, Landscape, Minimal, Space, Neon, etc. if you are into these. Then it allows one to find wallpapers based on colors, i.e. you can find wallpapers with a color that matches your icons or home screen setup. Not even that, it also shows you a palette of colors from any wallpaper in the app, on clicking which you can find wallpapers of that specific color.
+<b>➡SETUPS</b>
+- Best community made home screen setups
+- Unique browsing experience for viewing setups
+- High-quality setups uploaded weekly
+- Weekly giveaway contest for setups
+- Upload your setups for free!
+- Favourite & share the ones you like
 
-Main features like finding, downloading and setting up wallpapers don't require Google Sign In, while features like Favourites require you to sign up using Google. This signup is facilitated by Google Firebase, so it is secure and we only get your name, email, and profile photo for identification purposes. The app also has Dark Mode, if you want to save your phone's battery while getting in love with those wallpapers. The app also allows users to share wallpapers with others by giving them a unique link for every wallpaper, using Firebase Dynamic Links so that anyone can directly view the wallpaper.
+<b>➡COLLECTIONS</b>
+- Premium wallpaper collections made exclusively by hand!
+- Updated daily!
+- Unique random collection to find hidden gems
+- 30+ exclusive categories from WallHaven and Pexels
 
-### Introducing Prism Premium
+<b>➡PROFILE</b>
+- Upload walls & setups!
+- Create your wallpaper resume and get verified!
+- Promote your social media handles!
+- Share your profile easily with others
 
-Now get access to more premium and exclusive stuff by buying Prism Premium.
+<b>➡AND MORE...</b>
+- AMOLED Dark mode built-in
+- Cloud sync your data with Google sign-in
+- Unique in-app notification center for less disturbing notifications
+- Secure data and favourites storage
+- 10+ themes to customise the look and feel of the app
+- Fresh, beautiful design with smooth animations
+- Clear Cache, Downloads, or Favourites with one-tap
+- Low internet usage with excessive caching
+- In-built wallpaper optimisation and sketchy walls filter.
 
-You get access to Variants (Set up to 5 color variants of each wallpaper!) and Setups (Get more exclusive Home Screen setups! Free version includes only 5 free setups).
-Your uploads are also reviewed instantly, rather than the 24 hours time constraint in the free version.
-You also get a PRO badge in front of your profile, plus you directly support the development of this forever ad-free app.
+<b>Introducing Prism Premium -</b>
+Now get access to more premium and exclusive stuff by buying Prism Premium. It also removes the download wallpaper ad.
 
-- The ability to view setups (only 5 are present in the free version)
-- The ability to set variants of wallpapers
-- Get PRO badge in front of your profile
-- Get uploads reviewed instantly
-- Get rid of all rewarded video ads(Used for downloads)
 - Support development of the app
+- Be a part of exclusive giveaways
+- The ability to set and view details of setups (only 5 free setups can be applied in the free version)
+- The ability to use wallpaper filters
+- Get uploads reviewed instantly
+- Get rid of all rewarded video ads (Used for downloads)
+- Get PRO badge in front of your profile
+- The ability to view premium collections
 
-### Twitter
+Feel free to contact us for any issues, hash.studios.inc@gmail.com
 
-Prism Wallpapers is now on Twitter. We regularly share exclusive wallpapers, setups and organise giveaways.
-Follow us there to stay notified. [https://twitter.com/PrismWallpapers](https://twitter.com/PrismWallpapers)
+Join beta for the latest experimental builds and help us test the app, [https://play.google.com/apps/testing/com.hash.prism](https://play.google.com/apps/testing/com.hash.prism)
 
-<a href='https://twitter.com/PrismWallpapers'><img alt='Follow on Twitter' src='https://img.shields.io/twitter/follow/PrismWallpapers?color=green&label=Follow&logo=Twitter&style=plastic'/></a>
+Also, we regularly organize giveaways, share exclusive setups and wallpapers on Twitter, so follow us there [https://twitter.com/PrismWallpapers](https://twitter.com/PrismWallpapers)
+
+You can also report bugs, upload your setups/walls on our telegram channel
+[https://t.me/PrismWallpapers](https://t.me/PrismWallpapers)
 
 ## List of Contents
 
@@ -65,14 +105,15 @@ Follow us there to stay notified. [https://twitter.com/PrismWallpapers](https://
 ## Features
 
 - High-Quality Wallpapers from [WallHaven](https://wallhaven.cc/help/api) and [Pexels](https://www.pexels.com/api/)
-- Over 500+ exclusive wallpapers, making it the best selection ever
+- Over 1000+ exclusive wallpapers, making it the best selection ever
 - Community wallpapers uploaded by users all-around the world
 - Homescreen setups - Unique and exclusive setups designed with the perfect combination of wallpapers, icon pack and widgets
-- Exclusive collections updated daily
-- Each wallpaper comes with 5 color variants
-- Dark Mode supported
+- Exclusive collections updated daily with premium wallpapers
+- Each wallpaper comes with 5 color variants and 20+ filters
+- AMOLED Dark Mode supported
 - Optional Sign-in
-- Each wallpaper has a unique link, makes sharing them easier
+- Each wallpaper/setup/user has a unique link, makes sharing them easier
+- Option to add Twitter/Instagram to your profile
 - Low Internet usage due to minimal loading and persistent data using Provider/ CacheNetworkImage
 - Save Liked Images for later (works even after uninstalling the app)
 - Download any wallpaper to Gallery by watching a quick video ad
@@ -88,80 +129,61 @@ Follow us there to stay notified. [https://twitter.com/PrismWallpapers](https://
 - Minimal design with smooth transitions and animations
 - Clear Cache, Downloads and Favourites with one-tap
 - Optimized storage using minimal packages
-- Application size under 14 MB
+- Application size about 12 MB
 - Adaptive UI (changes color based on wallpaper)
 
 ## Changelog
 
 Full changelog can be found [here](https://github.com/Hash-Studios/Prism/tree/master/CHANGELOG.md).
 
-### v2.5.5
-- Premium uploads get reviewed instantly now
-- Added collections, find similar wallpapers easily
-- Update popup replaced with update notification
-- Update app tutorial
-- Bumped up the targetSDK, compileSDK to 29
-- Major bug fixes
-
-### v2.5.4
-- Updated password authentication in GitHub API to Personal access token based
-- Added wallpaper editing options before uploading
-- Improved overall caching, leading to low internet usage
-- Major bug fixes
-
-### v2.5.3
-- Added set wallpaper Action Dialog
-- Fixed set wallpaper intent
-- Added long press to crop and tap to set
-- Added notifications subscription
-- Added all-new notifications center
-- Minor bug fixes
-
-### v2.5.2
-- Added carousel widget in home screen
-- Added rewarded video ads for wallpaper downloads
-- Now download wallpapers, without sign-in
-- Variants can now also be downloaded by watching an ad
-- Added all-new notifications center
-- Minor bug fixes
-
+### v2.6.2
+- Fixed notification modifiers
+- Added new image compression technique
+- Fixed premium wallpapers & setups
+- Added new onboarding pages
+- Added report button in walls and setups
+- Redesigned premium page
+- Redesigned settings page
+- Increased content value in premium
+- Fixed wallpaper uploading in setups
+- Added new filters (Blur, Invert, Edge & Sharpen)
+- Minor bug fixes and improvements
 
 ## Demo
 
 **Screens**
 
-| ![](demo/65.jpg) | ![](demo/73.jpg) | ![](demo/74.jpg) | ![](demo/3.jpg) | ![](demo/4.jpg) |
+| ![](demo/2.jpg) | ![](demo/3.jpg) | ![](demo/4.jpg) | ![](demo/5.jpg) | ![](demo/6.jpg) |
 | :-------------: | :-------------:  | :-------------:  | :-------------:  | :-------------:  |
 |     Home     |    Search WallHaven   |    Search Pexels     |     Color Picker       |     Color Based     |
 
-| ![](demo/78.jpg) | ![](demo/80.jpg) | ![](demo/60.jpg) | ![](demo/61.jpg) | ![](demo/79.jpg) |
+| ![](demo/7.jpg) | ![](demo/8.jpg) | ![](demo/9.jpg) | ![](demo/11.jpg) | ![](demo/12.jpg) |
 | :-------------:  | :-------------:  | :-------------:  | :-------------:  | :-------------:  |
 |    Favourites    |    Downloads     |     Setups       |    Setups Info    |     Profile     |
 
-| ![](demo/28.jpg) | ![](demo/76.jpg)| ![](demo/77.jpg)       | ![](demo/68.jpg)  | ![](demo/88.jpg) |
+| ![](demo/13.jpg) | ![](demo/14.jpg)| ![](demo/16.jpg)       | ![](demo/17.jpg)  | ![](demo/18.jpg) |
 | :-------------:  | :-------------: | :-------------:       | :-------------:  | :-------------:  |
 |  Upload Popup    |    Edit Wallpaper       |  Uploading Wallpaper    | Uploader's Profile   |     Scroll to Top Button       |
 
-| ![](demo/70.jpg) | ![](demo/69.jpg) | ![](demo/87.jpg)| ![](demo/72.jpg) | ![](demo/71.jpg) |
+| ![](demo/19.jpg) | ![](demo/20.jpg) | ![](demo/21.jpg)| ![](demo/23.jpg) | ![](demo/25.jpg) |
 | :-------------: | :-------------: | :-------------: | :-------------:  | :-------------:  |
-|     Categories     |     Collections    | Collection (Shapes)  |    Notifications     |     Textures       |
+|     Categories     |     Collections    | Collection (Illustrations)  |    Setup Guidelines     |     Setup Upload       |
 
-| ![](demo/63.jpg) | ![](demo/89.jpg) | ![](demo/37.jpg)       | ![](demo/38.jpg)  | ![](demo/67.jpg)|
+| ![](demo/36.jpg) | ![](demo/38.jpg) | ![](demo/27.jpg)       | ![](demo/30.jpg)  | ![](demo/29.jpg)|
 | :-------------:  | :-------------:  | :-------------:       | :-------------:  | :-------------: |
-|     Premium Info       |     Premium Page    |  Wallpaper Display    | Clock for testing   | Wallpaper Info  |
+|     About Page       |     Premium Page    |  Wallpaper Display    | Clock for testing   | Wallpaper Info  |
 
-| ![](demo/41.jpg) | ![](demo/40.jpg) | ![](demo/33.jpg) | ![](demo/35.jpg) | ![](demo/36.jpg) |
+| ![](demo/33.jpg) | ![](demo/34.jpg) | ![](demo/35.jpg) | ![](demo/37.jpg) | ![](demo/22.jpg) |
 | :-------------: | :-------------:  | :-------------:  | :-------------:  | :-------------:  |
-|     Splash Screen    |    Quick Action Menu    |    Settings     |     Theme Switcher Dark       |     Theme Switcher Light    |
+|     Splash Screen    |    Quick Action Menu    |    Settings     |     Themes      |     Notifications    |
 
-This theme switcher toggle button was inspired by [Shubham](https://github.com/shubhamhackz) and you can check out his code [here](https://github.com/shubhamhackz/light_dark_toggle).
+**Themes**
 
-**Light Theme**
-
-| ![](demo/81.jpg) | ![](demo/83.jpg)| ![](demo/85.jpg)| ![](demo/84.jpg) | ![](demo/86.jpg)|
+| ![](demo/39.jpg) | ![](demo/40.jpg)| ![](demo/41.jpg)| ![](demo/42.jpg) | ![](demo/43.jpg)|
 | :-------------:  | :-------------: | :-------------: | :-------------:  | :-------------: |
-|  Home  |Search|  Favourites    |      Setups   |      Profile  |
+|  Frosty White  |Coffee|  AMOLED    |      Rose   |      Cotton  |
 
+...and 10 more!
 
 ## Support
 
@@ -179,45 +201,46 @@ Prism Wallpapers app is now available on Google Play, so you can support us by g
 
 The following packages are needed for the development of this application.
 
-- `share: ^0.6.4` for sharing the wallpaper links
-- `url_launcher: ^5.4.5` for launching urls
+- `animations: ^1.1.2` for dialog/transition animations
+- `cached_network_image: ^2.2.0+1` for caching wallpapers
+- `carousel_slider: ^2.2.1` for carousel widget
 - `cloud_firestore: ^0.13.5` for storing liked images and other user based data
-- `firebase_core: ^0.4.4+3` for firebase support
+- `data_connection_checker: ^0.3.4` for checking Internet connection
+- `device_info: ^0.4.2+7` for getting device info for bug reports
+- `extended_image: ^0.9.0` for cropping wallpapers before uploading
+- `firebase_admob: ^0.9.3+4` for rewarded video ads
+- `firebase_analytics: ^5.0.16` for analytics
 - `firebase_auth: ^0.16.0` for user authentication
-- `google_sign_in: ^4.4.4` for Google sign in support
+- `firebase_core: ^0.4.4+3` for firebase support
+- `firebase_dynamic_links: ^0.5.1` for wallpaper link generation and handling
+- `firebase_messaging: ^6.0.16` for notifications
+- `firebase_remote_config: ^0.3.1+1` for manipulating the app remotely
+- `flare_flutter: ^2.0.5` for animations
 - `flare_splash_screen: ^3.0.1` for the animated splash screen
-- `provider: ^4.1.3` for caching data, and state management
-- `flutter_svg: 0.17.4` for svg assets
-- `palette_generator: ^0.2.2` for generating wallpaper colors
+- `flutter_displaymode: ^0.1.1` for checking display resolution and refresh rate
+- `flutter_svg: ^0.19.0` for svg assets
 - `fluttertoast: ^4.0.1` for toast notifications
 - `gallery_saver: ^2.0.1` for saving wallpapers to gallery
-- `firebase_dynamic_links: ^0.5.1` for wallpaper link generation and handling
-- `permission_handler: ^5.0.1+1` for handling required device permissions
-- `sliding_up_panel: ^1.0.2` for sliding info panel
-- `firebase_analytics: ^5.0.16` for analytics
-- `firebase_messaging: ^6.0.16` for notifications
-- `in_app_purchase: ^0.3.4+1` for in-app purchases
-- `firebase_crashlytics: ^0.1.3+3` for handling crashes, and better reporting
-- `screenshot: ^0.2.0` for setting wallpapers
-- `tutorial_coach_mark: ^0.3.0` for showing new user tutorial
-- `scroll_to_index: ^1.0.6` for scrolling lists
-- `image_picker: ^0.6.7+4` for picking images
 - `github: ^6.2.2` for communicating with GitHub API
-- `photo_view: ^0.9.2` for showing images before uploading
-- `cached_network_image: ^2.2.0+1` for caching wallpapers
-- `flare_flutter: ^2.0.5` for animations
+- `google_sign_in: ^4.4.4` for Google sign in support
 - `hive: ^1.4.1+1` for caaching data
-- `hive_flutter: ^0.3.0+1` for caching data
-- `path_provider: ^1.6.11` for getting Application storage directory path
-- `flutter_windowmanager: ^0.0.2` for adding security flags
-- `purchases_flutter: ^1.2.1` for RevenueCat support
-- `firebase_remote_config: ^0.3.1+1` for manipulating the app remotely
-- `data_connection_checker: ^0.3.4` for checking Internet connection
-- `carousel_slider: ^2.2.1` for carousel widget
-- `firebase_admob: ^0.9.3+4` for rewarded video ads
+- `hive_flutter: ^0.3.0+1` for caaching data
 - `image_editor: ^0.7.1` for editing wallpapers during upload
-- `extended_image: ^0.9.0` for cropping wallpapers before uploading
-- `device_info: ^0.4.2+7` for getting device info for bug reports
+- `image_picker: ^0.6.7+4` for picking images
+- `in_app_purchase: ^0.3.4+1` for in-app purchases
+- `in_app_update: ^1.1.13` for updating app
+- `palette_generator: ^0.2.2` for generating wallpaper colors
+- `path_provider: ^1.6.11` for getting Application storage directory path
+- `permission_handler: ^5.0.1+1` for handling required device permissions
+- `photo_view: ^0.9.2` for showing images before uploading
+- `photofilters: ^2.0.1` for editing filters
+- `provider: ^4.1.3` for caching data, and state management
+- `purchases_flutter: ^1.2.1` for RevenueCat support
+- `rate_my_app: ^0.7.2` for showing app rating popup
+- `screenshot: ^0.2.0` for setting wallpapers
+- `share: ^0.6.4` for sharing the wallpaper links
+- `sliding_up_panel: ^1.0.2` for sliding info panel
+- `url_launcher: ^5.4.5` for launching urls
 
 More details about these can be found in the [`pubspec.yaml`](https://github.com/Hash-Studios/Prism/tree/master/pubspec.yaml) file.
 
