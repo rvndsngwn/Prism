@@ -1,12 +1,10 @@
 import 'package:Prism/analytics/analytics_service.dart';
-import 'package:Prism/routes/routing_constants.dart';
 import 'package:Prism/theme/jam_icons_icons.dart';
 import 'package:Prism/theme/themeModel.dart';
 import 'package:Prism/ui/pages/home/core/splashScreen.dart';
 import 'package:Prism/ui/pages/onboarding/twitterigPopUp.dart';
 import 'package:Prism/ui/widgets/animated/showUp.dart';
 import 'package:flutter/material.dart';
-import 'package:flutter/services.dart';
 import 'package:provider/provider.dart';
 import 'package:Prism/global/globals.dart' as globals;
 import 'package:Prism/main.dart' as main;
@@ -80,7 +78,7 @@ class _OnboardingScreenState extends State<OnboardingScreen> {
                     mainAxisAlignment: MainAxisAlignment.spaceBetween,
                     children: [
                       Padding(
-                          padding: const EdgeInsets.fromLTRB(0, 120, 0, 8),
+                          padding: const EdgeInsets.fromLTRB(0, 110, 0, 8),
                           child: image1),
                       Column(
                         mainAxisAlignment: MainAxisAlignment.end,
@@ -132,7 +130,7 @@ class _OnboardingScreenState extends State<OnboardingScreen> {
                     mainAxisAlignment: MainAxisAlignment.spaceBetween,
                     children: [
                       Padding(
-                          padding: const EdgeInsets.fromLTRB(0, 120, 0, 8),
+                          padding: const EdgeInsets.fromLTRB(0, 110, 0, 8),
                           child: image2),
                       Column(
                         mainAxisAlignment: MainAxisAlignment.end,
@@ -339,7 +337,7 @@ class _OnboardingScreenState extends State<OnboardingScreen> {
                     mainAxisAlignment: MainAxisAlignment.spaceBetween,
                     children: [
                       Padding(
-                          padding: const EdgeInsets.fromLTRB(0, 120, 0, 8),
+                          padding: const EdgeInsets.fromLTRB(0, 110, 0, 8),
                           child: image3),
                       Column(
                         mainAxisAlignment: MainAxisAlignment.end,
@@ -403,7 +401,7 @@ class _OnboardingScreenState extends State<OnboardingScreen> {
                                     curve: Curves.easeOutCubic);
                               }
                             : () {
-                                main.prefs.put('onboarded', true);
+                                main.prefs.put('onboarded_new', true);
                                 Navigator.pushReplacement(
                                     context,
                                     MaterialPageRoute(
@@ -452,14 +450,21 @@ class _OnboardingScreenState extends State<OnboardingScreen> {
                                           Future.delayed(const Duration(
                                                   milliseconds: 500))
                                               .then((value) {
-                                            main.prefs.put('onboarded', true);
+                                            main.prefs.put('onboarded_new', true);
                                             Navigator.pushReplacement(
                                                 context,
                                                 MaterialPageRoute(
                                                     builder: (context) =>
                                                         OptionalInfo(
                                                           img: Image.asset(
-                                                              'assets/images/first.png'),
+                                                            'assets/images/fourth.png',
+                                                            height: MediaQuery.of(
+                                                                        context)
+                                                                    .size
+                                                                    .height *
+                                                                2 /
+                                                                5,
+                                                          ),
                                                           heading:
                                                               'Interact with community',
                                                           subheading:

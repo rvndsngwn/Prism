@@ -6,7 +6,6 @@ import 'package:firebase_remote_config/firebase_remote_config.dart';
 import 'package:flutter/material.dart';
 import 'package:flare_splash_screen/flare_splash_screen.dart';
 import 'package:Prism/theme/theme.dart';
-import 'package:flutter/services.dart';
 import 'package:provider/provider.dart';
 import 'package:Prism/global/globals.dart' as globals;
 import 'package:Prism/theme/config.dart' as config;
@@ -75,7 +74,7 @@ class SplashWidget extends StatelessWidget {
     globals.hasNotch = height > 24;
     globals.notchSize = height;
     notchChecked = true;
-    print('Notch Height = $height');
+    debugPrint('Notch Height = $height');
   }
 
   SplashWidget({

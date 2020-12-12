@@ -6,7 +6,7 @@ analyzer:
     # deprecated_member_use: ignore
     missing_return: ignore
     # library_prefixes: ignore
-    # file_names: ignore
+    file_names: ignore
     # prefer_if_elements_to_conditional_expressions: ignore
     # non_constant_identifier_names: ignore
     # avoid_function_literals_in_foreach_calls: ignore

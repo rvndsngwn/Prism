@@ -77,7 +77,7 @@ class _OptionalInfoState extends State<OptionalInfo> {
             child: Column(
               children: [
                 Padding(
-                    padding: const EdgeInsets.fromLTRB(0, 120, 0, 8),
+                    padding: const EdgeInsets.fromLTRB(0, 110, 0, 8),
                     child: image1),
                 ShowUpTransition(
                   forward: true,
@@ -588,7 +588,7 @@ class ApplyButton extends StatelessWidget {
                     fontWeight: FontWeight.w500,
                   ),
                 ),
-                const Spacer(flex: 1),
+                const Spacer(),
                 Container(
                   width: 20,
                   height: 20,

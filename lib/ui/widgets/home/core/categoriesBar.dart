@@ -12,7 +12,6 @@ import 'package:provider/provider.dart';
 import 'package:Prism/routes/routing_constants.dart';
 import 'package:Prism/theme/config.dart' as config;
 import 'package:Prism/analytics/analytics_service.dart';
-import 'package:Prism/ui/pages/home/core/pageManager.dart' as PM;
 
 class CategoriesBar extends StatefulWidget {
   const CategoriesBar({
@@ -81,7 +80,7 @@ class _CategoriesBarState extends State<CategoriesBar> {
           width: Provider.of<CategorySupplier>(context).getCurrentChoice ==
                   "Community"
               ? 110
-              : 200,
+              : 260,
           child: Provider.of<CategorySupplier>(context).getCurrentChoice ==
                   "Community"
               ? SvgPicture.string(
@@ -90,17 +89,29 @@ class _CategoriesBarState extends State<CategoriesBar> {
                     "#${Theme.of(context).accentColor.value.toRadixString(16).toString().substring(2)}",
                   ),
                 )
-              : Text(
-                  "   ${Provider.of<CategorySupplier>(context).getCurrentChoice}"
-                      .toUpperCase(),
-                  maxLines: 1,
-                  textAlign: TextAlign.left,
-                  overflow: TextOverflow.fade,
-                  style: Theme.of(context).textTheme.headline3.copyWith(
-                        fontFamily: "Proxima Nova",
-                        fontWeight: FontWeight.bold,
-                        color: Theme.of(context).accentColor,
-                      ),
+              : GestureDetector(
+                  onTap: () {
+                    analytics.logEvent(
+                      name: 'categories_checked',
+                    );
+                    showCategories(
+                        context,
+                        Provider.of<CategorySupplier>(context, listen: false)
+                            .selectedChoice);
+                  },
+                  child: Text(
+                    "   ${Provider.of<CategorySupplier>(context).getCurrentChoice}"
+                        .toUpperCase(),
+                    maxLines: 1,
+                    textAlign: TextAlign.left,
+                    overflow: TextOverflow.clip,
+                    style: Theme.of(context).textTheme.headline3.copyWith(
+                          fontFamily: "Proxima Nova",
+                          fontSize: 26,
+                          fontWeight: FontWeight.bold,
+                          color: Theme.of(context).accentColor,
+                        ),
+                  ),
                 ),
         ),
       ),

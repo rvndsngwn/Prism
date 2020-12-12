@@ -1,6 +1,7 @@
 import 'dart:ui';
 
 import 'package:Prism/data/favourites/provider/favouriteSetupProvider.dart';
+import 'package:Prism/data/informatics/dataManager.dart';
 import 'package:Prism/data/profile/wallpaper/profileSetupProvider.dart';
 import 'package:Prism/data/share/createDynamicLink.dart';
 import 'package:Prism/routes/router.dart';
@@ -10,6 +11,7 @@ import 'package:Prism/ui/widgets/home/core/collapsedPanel.dart';
 import 'package:Prism/ui/widgets/menuButton/downloadButton.dart';
 import 'package:Prism/ui/widgets/menuButton/setWallpaperButton.dart';
 import 'package:cached_network_image/cached_network_image.dart';
+import 'package:device_apps/device_apps.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:provider/provider.dart';
@@ -53,6 +55,10 @@ class _ProfileSetupViewScreenState extends State<ProfileSetupViewScreen>
     shakeController = AnimationController(
         duration: const Duration(milliseconds: 300), vsync: this);
     index = widget.arguments[0] as int;
+    updateViewsSetup(Provider.of<ProfileSetupProvider>(context, listen: false)
+        .profileSetups[index]["id"]
+        .toString()
+        .toUpperCase());
     isLoading = true;
     super.initState();
   }
@@ -176,13 +182,14 @@ class _ProfileSetupViewScreenState extends State<ProfileSetupViewScreen>
                           duration: const Duration(),
                           opacity: panelCollapsed ? 0.0 : 1.0,
                           child: GestureDetector(
-                            onTap: (){
+                            onTap: () {
                               panelController.close();
                             },
-                                                      child: Icon(
+                            child: Icon(
                               JamIcons.chevron_down,
                               color: Theme.of(context).accentColor,
-                            ),),
+                            ),
+                          ),
                         ),
                       )),
                       Expanded(
@@ -506,6 +513,7 @@ class _ProfileSetupViewScreenState extends State<ProfileSetupViewScreen>
                                   mainAxisSize: MainAxisSize.min,
                                   children: [
                                     SetupDetailsTile(
+                                      isInstalled: Future.value(false),
                                       onTap: () async {
                                         if (Provider.of<ProfileSetupProvider>(
                                                     context,
@@ -519,15 +527,20 @@ class _ProfileSetupViewScreenState extends State<ProfileSetupViewScreen>
                                                           listen: false)
                                                       .profileSetups[index]
                                                   ["wall_id"] ==
-                                              null) {
+                                              null || Provider.of<ProfileSetupProvider>(
+                                                          context,
+                                                          listen: false)
+                                                      .profileSetups[index]
+                                                  ["wall_id"] ==
+                                              "") {
                                             debugPrint("Id Not Found!");
-                                            launch(
-                                              Provider.of<ProfileSetupProvider>(
-                                                      context,
-                                                      listen: false)
-                                                  .profileSetups[index]
-                                                      ["wallpaper_url"]
-                                                  .toString());
+                                            launch(Provider.of<
+                                                        ProfileSetupProvider>(
+                                                    context,
+                                                    listen: false)
+                                                .profileSetups[index]
+                                                    ["wallpaper_url"]
+                                                .toString());
                                           } else {
                                             Navigator.pushNamed(
                                                 context, shareRoute,
@@ -593,14 +606,68 @@ class _ProfileSetupViewScreenState extends State<ProfileSetupViewScreen>
                                       delay: const Duration(milliseconds: 150),
                                     ),
                                     SetupDetailsTile(
+                                      isInstalled: Provider.of<
+                                                      ProfileSetupProvider>(
+                                                  context,
+                                                  listen: false)
+                                              .profileSetups[index]["icon_url"]
+                                              .toString()
+                                              .contains(
+                                                  'play.google.com/store/apps/details?id=')
+                                          ? DeviceApps.isAppInstalled(
+                                              Provider.of<ProfileSetupProvider>(
+                                                      context,
+                                                      listen: false)
+                                                  .profileSetups[index]
+                                                      ["icon_url"]
+                                                  .toString()
+                                                  .split("details?id=")[1]
+                                                  .split("&")[0])
+                                          : Future.value(false),
                                       onTap: () async {
-                                        launch(
-                                            Provider.of<ProfileSetupProvider>(
-                                                    context,
-                                                    listen: false)
-                                                .profileSetups[index]
-                                                    ["icon_url"]
-                                                .toString());
+                                        if (Provider.of<ProfileSetupProvider>(
+                                                context,
+                                                listen: false)
+                                            .profileSetups[index]["icon_url"]
+                                            .toString()
+                                            .contains(
+                                                'play.google.com/store/apps/details?id=')) {
+                                          final isInstalled = await DeviceApps
+                                              .isAppInstalled(Provider.of<
+                                                          ProfileSetupProvider>(
+                                                      context,
+                                                      listen: false)
+                                                  .profileSetups[index]
+                                                      ["icon_url"]
+                                                  .toString()
+                                                  .split("details?id=")[1]
+                                                  .split("&")[0]);
+                                          isInstalled
+                                              ? DeviceApps.openApp(Provider.of<
+                                                          ProfileSetupProvider>(
+                                                      context,
+                                                      listen: false)
+                                                  .profileSetups[index]
+                                                      ["icon_url"]
+                                                  .toString()
+                                                  .split("details?id=")[1]
+                                                  .split("&")[0])
+                                              : launch(Provider.of<
+                                                          ProfileSetupProvider>(
+                                                      context,
+                                                      listen: false)
+                                                  .profileSetups[index]
+                                                      ["icon_url"]
+                                                  .toString());
+                                        } else {
+                                          launch(
+                                              Provider.of<ProfileSetupProvider>(
+                                                      context,
+                                                      listen: false)
+                                                  .profileSetups[index]
+                                                      ["icon_url"]
+                                                  .toString());
+                                        }
                                       },
                                       tileText:
                                           Provider.of<ProfileSetupProvider>(
@@ -629,6 +696,7 @@ class _ProfileSetupViewScreenState extends State<ProfileSetupViewScreen>
                                       mainAxisSize: MainAxisSize.min,
                                       children: [
                                         SetupDetailsTile(
+                                          isInstalled: Future.value(false),
                                           onTap: () async {
                                             if (Provider.of<ProfileSetupProvider>(
                                                         context,
@@ -642,15 +710,20 @@ class _ProfileSetupViewScreenState extends State<ProfileSetupViewScreen>
                                                               listen: false)
                                                           .profileSetups[index]
                                                       ["wall_id"] ==
-                                                  null) {
+                                                  null || Provider.of<ProfileSetupProvider>(
+                                                              context,
+                                                              listen: false)
+                                                          .profileSetups[index]
+                                                      ["wall_id"] ==
+                                                  "") {
                                                 debugPrint("Id Not Found!");
-                                                 launch(Provider.of<
-                                                          ProfileSetupProvider>(
-                                                      context,
-                                                      listen: false)
-                                                  .profileSetups[index]
-                                                      ["wallpaper_url"]
-                                                  .toString());
+                                                launch(Provider.of<
+                                                            ProfileSetupProvider>(
+                                                        context,
+                                                        listen: false)
+                                                    .profileSetups[index]
+                                                        ["wallpaper_url"]
+                                                    .toString());
                                               } else {
                                                 Navigator.pushNamed(
                                                     context, shareRoute,
@@ -717,14 +790,71 @@ class _ProfileSetupViewScreenState extends State<ProfileSetupViewScreen>
                                               const Duration(milliseconds: 150),
                                         ),
                                         SetupDetailsTile(
+                                          isInstalled: Provider.of<
+                                                          ProfileSetupProvider>(
+                                                      context,
+                                                      listen: false)
+                                                  .profileSetups[index]
+                                                      ["icon_url"]
+                                                  .toString()
+                                                  .contains(
+                                                      'play.google.com/store/apps/details?id=')
+                                              ? DeviceApps.isAppInstalled(Provider
+                                                      .of<ProfileSetupProvider>(
+                                                          context,
+                                                          listen: false)
+                                                  .profileSetups[index]
+                                                      ["icon_url"]
+                                                  .toString()
+                                                  .split("details?id=")[1]
+                                                  .split("&")[0])
+                                              : Future.value(false),
                                           onTap: () async {
-                                            launch(Provider.of<
+                                            if (Provider.of<
                                                         ProfileSetupProvider>(
                                                     context,
                                                     listen: false)
                                                 .profileSetups[index]
                                                     ["icon_url"]
-                                                .toString());
+                                                .toString()
+                                                .contains(
+                                                    'play.google.com/store/apps/details?id=')) {
+                                              final isInstalled = await DeviceApps
+                                                  .isAppInstalled(Provider.of<
+                                                              ProfileSetupProvider>(
+                                                          context,
+                                                          listen: false)
+                                                      .profileSetups[index]
+                                                          ["icon_url"]
+                                                      .toString()
+                                                      .split("details?id=")[1]
+                                                      .split("&")[0]);
+                                              isInstalled
+                                                  ? DeviceApps.openApp(Provider
+                                                          .of<ProfileSetupProvider>(
+                                                              context,
+                                                              listen: false)
+                                                      .profileSetups[index]
+                                                          ["icon_url"]
+                                                      .toString()
+                                                      .split("details?id=")[1]
+                                                      .split("&")[0])
+                                                  : launch(Provider.of<
+                                                              ProfileSetupProvider>(
+                                                          context,
+                                                          listen: false)
+                                                      .profileSetups[index]
+                                                          ["icon_url"]
+                                                      .toString());
+                                            } else {
+                                              launch(Provider.of<
+                                                          ProfileSetupProvider>(
+                                                      context,
+                                                      listen: false)
+                                                  .profileSetups[index]
+                                                      ["icon_url"]
+                                                  .toString());
+                                            }
                                           },
                                           tileText:
                                               Provider.of<ProfileSetupProvider>(
@@ -738,14 +868,71 @@ class _ProfileSetupViewScreenState extends State<ProfileSetupViewScreen>
                                               const Duration(milliseconds: 200),
                                         ),
                                         SetupDetailsTile(
+                                          isInstalled: Provider.of<
+                                                          ProfileSetupProvider>(
+                                                      context,
+                                                      listen: false)
+                                                  .profileSetups[index]
+                                                      ["widget_url"]
+                                                  .toString()
+                                                  .contains(
+                                                      'play.google.com/store/apps/details?id=')
+                                              ? DeviceApps.isAppInstalled(Provider
+                                                      .of<ProfileSetupProvider>(
+                                                          context,
+                                                          listen: false)
+                                                  .profileSetups[index]
+                                                      ["widget_url"]
+                                                  .toString()
+                                                  .split("details?id=")[1]
+                                                  .split("&")[0])
+                                              : Future.value(false),
                                           onTap: () async {
-                                            launch(Provider.of<
+                                            if (Provider.of<
                                                         ProfileSetupProvider>(
                                                     context,
                                                     listen: false)
                                                 .profileSetups[index]
                                                     ["widget_url"]
-                                                .toString());
+                                                .toString()
+                                                .contains(
+                                                    'play.google.com/store/apps/details?id=')) {
+                                              final isInstalled = await DeviceApps
+                                                  .isAppInstalled(Provider.of<
+                                                              ProfileSetupProvider>(
+                                                          context,
+                                                          listen: false)
+                                                      .profileSetups[index]
+                                                          ["widget_url"]
+                                                      .toString()
+                                                      .split("details?id=")[1]
+                                                      .split("&")[0]);
+                                              isInstalled
+                                                  ? DeviceApps.openApp(Provider
+                                                          .of<ProfileSetupProvider>(
+                                                              context,
+                                                              listen: false)
+                                                      .profileSetups[index]
+                                                          ["widget_url"]
+                                                      .toString()
+                                                      .split("details?id=")[1]
+                                                      .split("&")[0])
+                                                  : launch(Provider.of<
+                                                              ProfileSetupProvider>(
+                                                          context,
+                                                          listen: false)
+                                                      .profileSetups[index]
+                                                          ["widget_url"]
+                                                      .toString());
+                                            } else {
+                                              launch(Provider.of<
+                                                          ProfileSetupProvider>(
+                                                      context,
+                                                      listen: false)
+                                                  .profileSetups[index]
+                                                      ["widget_url"]
+                                                  .toString());
+                                            }
                                           },
                                           tileText:
                                               Provider.of<ProfileSetupProvider>(
@@ -767,6 +954,7 @@ class _ProfileSetupViewScreenState extends State<ProfileSetupViewScreen>
                                       child: ListView(
                                         children: [
                                           SetupDetailsTile(
+                                            isInstalled: Future.value(false),
                                             onTap: () async {
                                               if (Provider.of<ProfileSetupProvider>(
                                                           context,
@@ -780,15 +968,20 @@ class _ProfileSetupViewScreenState extends State<ProfileSetupViewScreen>
                                                                 listen: false)
                                                             .profileSetups[
                                                         index]["wall_id"] ==
-                                                    null) {
+                                                    null || Provider.of<ProfileSetupProvider>(
+                                                                context,
+                                                                listen: false)
+                                                            .profileSetups[
+                                                        index]["wall_id"] ==
+                                                    "") {
                                                   debugPrint("Id Not Found!");
                                                   launch(Provider.of<
-                                                            ProfileSetupProvider>(
-                                                        context,
-                                                        listen: false)
-                                                    .profileSetups[index]
-                                                        ["wallpaper_url"]
-                                                    .toString());
+                                                              ProfileSetupProvider>(
+                                                          context,
+                                                          listen: false)
+                                                      .profileSetups[index]
+                                                          ["wallpaper_url"]
+                                                      .toString());
                                                 } else {
                                                   Navigator.pushNamed(
                                                       context, shareRoute,
@@ -859,14 +1052,71 @@ class _ProfileSetupViewScreenState extends State<ProfileSetupViewScreen>
                                                 milliseconds: 150),
                                           ),
                                           SetupDetailsTile(
+                                            isInstalled: Provider.of<
+                                                            ProfileSetupProvider>(
+                                                        context,
+                                                        listen: false)
+                                                    .profileSetups[index]
+                                                        ["icon_url"]
+                                                    .toString()
+                                                    .contains(
+                                                        'play.google.com/store/apps/details?id=')
+                                                ? DeviceApps.isAppInstalled(
+                                                    Provider.of<ProfileSetupProvider>(
+                                                            context,
+                                                            listen: false)
+                                                        .profileSetups[index]
+                                                            ["icon_url"]
+                                                        .toString()
+                                                        .split("details?id=")[1]
+                                                        .split("&")[0])
+                                                : Future.value(false),
                                             onTap: () async {
-                                              launch(Provider.of<
+                                              if (Provider.of<
                                                           ProfileSetupProvider>(
                                                       context,
                                                       listen: false)
                                                   .profileSetups[index]
                                                       ["icon_url"]
-                                                  .toString());
+                                                  .toString()
+                                                  .contains(
+                                                      'play.google.com/store/apps/details?id=')) {
+                                                final isInstalled = await DeviceApps
+                                                    .isAppInstalled(Provider.of<
+                                                                ProfileSetupProvider>(
+                                                            context,
+                                                            listen: false)
+                                                        .profileSetups[index]
+                                                            ["icon_url"]
+                                                        .toString()
+                                                        .split("details?id=")[1]
+                                                        .split("&")[0]);
+                                                isInstalled
+                                                    ? DeviceApps.openApp(Provider
+                                                            .of<ProfileSetupProvider>(
+                                                                context,
+                                                                listen: false)
+                                                        .profileSetups[index]
+                                                            ["icon_url"]
+                                                        .toString()
+                                                        .split("details?id=")[1]
+                                                        .split("&")[0])
+                                                    : launch(Provider.of<
+                                                                ProfileSetupProvider>(
+                                                            context,
+                                                            listen: false)
+                                                        .profileSetups[index]
+                                                            ["icon_url"]
+                                                        .toString());
+                                              } else {
+                                                launch(Provider.of<
+                                                            ProfileSetupProvider>(
+                                                        context,
+                                                        listen: false)
+                                                    .profileSetups[index]
+                                                        ["icon_url"]
+                                                    .toString());
+                                              }
                                             },
                                             tileText: Provider.of<
                                                         ProfileSetupProvider>(
@@ -880,14 +1130,71 @@ class _ProfileSetupViewScreenState extends State<ProfileSetupViewScreen>
                                                 milliseconds: 200),
                                           ),
                                           SetupDetailsTile(
+                                            isInstalled: Provider.of<
+                                                            ProfileSetupProvider>(
+                                                        context,
+                                                        listen: false)
+                                                    .profileSetups[index]
+                                                        ["widget_url"]
+                                                    .toString()
+                                                    .contains(
+                                                        'play.google.com/store/apps/details?id=')
+                                                ? DeviceApps.isAppInstalled(
+                                                    Provider.of<ProfileSetupProvider>(
+                                                            context,
+                                                            listen: false)
+                                                        .profileSetups[index]
+                                                            ["widget_url"]
+                                                        .toString()
+                                                        .split("details?id=")[1]
+                                                        .split("&")[0])
+                                                : Future.value(false),
                                             onTap: () async {
-                                              launch(Provider.of<
+                                              if (Provider.of<
                                                           ProfileSetupProvider>(
                                                       context,
                                                       listen: false)
                                                   .profileSetups[index]
                                                       ["widget_url"]
-                                                  .toString());
+                                                  .toString()
+                                                  .contains(
+                                                      'play.google.com/store/apps/details?id=')) {
+                                                final isInstalled = await DeviceApps
+                                                    .isAppInstalled(Provider.of<
+                                                                ProfileSetupProvider>(
+                                                            context,
+                                                            listen: false)
+                                                        .profileSetups[index]
+                                                            ["widget_url"]
+                                                        .toString()
+                                                        .split("details?id=")[1]
+                                                        .split("&")[0]);
+                                                isInstalled
+                                                    ? DeviceApps.openApp(Provider
+                                                            .of<ProfileSetupProvider>(
+                                                                context,
+                                                                listen: false)
+                                                        .profileSetups[index]
+                                                            ["widget_url"]
+                                                        .toString()
+                                                        .split("details?id=")[1]
+                                                        .split("&")[0])
+                                                    : launch(Provider.of<
+                                                                ProfileSetupProvider>(
+                                                            context,
+                                                            listen: false)
+                                                        .profileSetups[index]
+                                                            ["widget_url"]
+                                                        .toString());
+                                              } else {
+                                                launch(Provider.of<
+                                                            ProfileSetupProvider>(
+                                                        context,
+                                                        listen: false)
+                                                    .profileSetups[index]
+                                                        ["widget_url"]
+                                                    .toString());
+                                              }
                                             },
                                             tileText: Provider.of<
                                                         ProfileSetupProvider>(
@@ -901,14 +1208,71 @@ class _ProfileSetupViewScreenState extends State<ProfileSetupViewScreen>
                                                 milliseconds: 250),
                                           ),
                                           SetupDetailsTile(
+                                            isInstalled: Provider.of<
+                                                            ProfileSetupProvider>(
+                                                        context,
+                                                        listen: false)
+                                                    .profileSetups[index]
+                                                        ["widget_url2"]
+                                                    .toString()
+                                                    .contains(
+                                                        'play.google.com/store/apps/details?id=')
+                                                ? DeviceApps.isAppInstalled(
+                                                    Provider.of<ProfileSetupProvider>(
+                                                            context,
+                                                            listen: false)
+                                                        .profileSetups[index]
+                                                            ["widget_url2"]
+                                                        .toString()
+                                                        .split("details?id=")[1]
+                                                        .split("&")[0])
+                                                : Future.value(false),
                                             onTap: () async {
-                                              launch(Provider.of<
+                                              if (Provider.of<
                                                           ProfileSetupProvider>(
                                                       context,
                                                       listen: false)
                                                   .profileSetups[index]
                                                       ["widget_url2"]
-                                                  .toString());
+                                                  .toString()
+                                                  .contains(
+                                                      'play.google.com/store/apps/details?id=')) {
+                                                final isInstalled = await DeviceApps
+                                                    .isAppInstalled(Provider.of<
+                                                                ProfileSetupProvider>(
+                                                            context,
+                                                            listen: false)
+                                                        .profileSetups[index]
+                                                            ["widget_url2"]
+                                                        .toString()
+                                                        .split("details?id=")[1]
+                                                        .split("&")[0]);
+                                                isInstalled
+                                                    ? DeviceApps.openApp(Provider
+                                                            .of<ProfileSetupProvider>(
+                                                                context,
+                                                                listen: false)
+                                                        .profileSetups[index]
+                                                            ["widget_url2"]
+                                                        .toString()
+                                                        .split("details?id=")[1]
+                                                        .split("&")[0])
+                                                    : launch(Provider.of<
+                                                                ProfileSetupProvider>(
+                                                            context,
+                                                            listen: false)
+                                                        .profileSetups[index]
+                                                            ["widget_url2"]
+                                                        .toString());
+                                              } else {
+                                                launch(Provider.of<
+                                                            ProfileSetupProvider>(
+                                                        context,
+                                                        listen: false)
+                                                    .profileSetups[index]
+                                                        ["widget_url2"]
+                                                    .toString());
+                                              }
                                             },
                                             tileText: Provider.of<
                                                         ProfileSetupProvider>(
@@ -1144,6 +1508,7 @@ class SetupDetailsTile extends StatelessWidget {
   final String tileType;
   final String tileText;
   final Function onTap;
+  final Future<bool> isInstalled;
   const SetupDetailsTile({
     Key key,
     @required this.delay,
@@ -1151,6 +1516,7 @@ class SetupDetailsTile extends StatelessWidget {
     @required this.tileType,
     @required this.onTap,
     @required this.panelCollapsed,
+    @required this.isInstalled,
   }) : super(key: key);
 
   @override
@@ -1206,9 +1572,22 @@ class SetupDetailsTile extends StatelessWidget {
                                     ),
                                   )),
                               Expanded(
-                                child: Icon(
-                                  JamIcons.chevron_right,
-                                  color: Theme.of(context).accentColor,
+                                child: FutureBuilder<bool>(
+                                  future: isInstalled,
+                                  initialData: false,
+                                  builder: (BuildContext context,
+                                      AsyncSnapshot snapshot) {
+                                    if (snapshot.data == true) {
+                                      return Icon(
+                                        JamIcons.check,
+                                        color: Theme.of(context).accentColor,
+                                      );
+                                    }
+                                    return Icon(
+                                      JamIcons.chevron_right,
+                                      color: Theme.of(context).accentColor,
+                                    );
+                                  },
                                 ),
                               )
                             ],
